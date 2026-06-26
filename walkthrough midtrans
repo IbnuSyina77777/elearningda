@@ -1,0 +1,73 @@
+# Integrasi Payment Gateway Midtrans
+
+Integrasi Midtrans Snap telah berhasil diimplementasikan! Siswa kini dapat membayar tagihan secara online langsung dari portal mereka.
+
+## File yang Dibuat / Dimodifikasi
+
+### File Baru
+| File | Fungsi |
+|---|---|
+| [config/midtrans.php](file:///c:/web/elearning/config/midtrans.php) | Konfigurasi Midtrans (Server Key, Client Key, mode Sandbox/Production) |
+| [PaymentController.php](file:///c:/web/elearning/app/Http/Controllers/Student/PaymentController.php) | Membuat Snap Token & menangani redirect setelah pembayaran |
+| [MidtransController.php](file:///c:/web/elearning/app/Http/Controllers/Webhook/MidtransController.php) | Menerima notifikasi webhook dari Midtrans dan memperbarui status transaksi secara otomatis |
+
+### File Dimodifikasi
+| File | Perubahan |
+|---|---|
+| [.env](file:///c:/web/elearning/.env) | Menambahkan variabel `MIDTRANS_SERVER_KEY`, `MIDTRANS_CLIENT_KEY`, `MIDTRANS_IS_PRODUCTION` |
+| [routes/web.php](file:///c:/web/elearning/routes/web.php) | Menambahkan rute `student/bills/{bill}/pay`, `student/payment/finish`, dan `api/midtrans/webhook` |
+| [bootstrap/app.php](file:///c:/web/elearning/bootstrap/app.php) | Mengecualikan endpoint webhook dari verifikasi CSRF |
+| [Bill.php](file:///c:/web/elearning/app/Models/Bill.php) | Menambahkan accessor `formatted_paid` |
+| [show.blade.php](file:///c:/web/elearning/resources/views/student/bills/show.blade.php) | Menambahkan tombol "Bayar Sekarang" dengan integrasi Snap JS |
+
+## Alur Pembayaran
+
+```mermaid
+sequenceDiagram
+    participant S as Siswa
+    participant App as Aplikasi
+    participant MT as Midtrans
+    
+    S->>App: Klik "Bayar Sekarang"
+    App->>MT: Request Snap Token
+    MT-->>App: Return Snap Token
+    App->>S: Tampilkan Popup Pembayaran
+    S->>MT: Pilih Metode & Bayar
+    MT->>App: Webhook Notification
+    App->>App: Update Status Transaksi & Tagihan
+```
+
+## Cara Mengaktifkan
+
+### Langkah 1: Dapatkan API Key Midtrans
+1. Daftar di [https://dashboard.midtrans.com/register](https://dashboard.midtrans.com/register)
+2. Login → masuk ke **Settings** → **Access Keys**
+3. Copy **Server Key** dan **Client Key** (pilih tab **Sandbox** untuk pengujian)
+
+### Langkah 2: Isi .env
+```env
+MIDTRANS_SERVER_KEY=SB-Mid-server-xxxxxxxxxxxxxxxx
+MIDTRANS_CLIENT_KEY=SB-Mid-client-xxxxxxxxxxxxxxxx
+MIDTRANS_IS_PRODUCTION=false
+```
+
+### Langkah 3: Set Notification URL di Dashboard Midtrans
+1. Di Midtrans Dashboard → **Settings** → **Configuration**
+2. Isi **Payment Notification URL** dengan:
+   ```
+   https://domain-anda.com/api/midtrans/webhook
+   ```
+   > Untuk pengujian lokal, gunakan tunneling service seperti **ngrok** agar Midtrans bisa mengirim notifikasi ke localhost Anda.
+
+### Langkah 4: Uji Coba
+1. Login sebagai **Siswa**
+2. Buka detail tagihan yang belum lunas
+3. Masukkan nominal pembayaran → klik **"Bayar Sekarang"**
+4. Popup Midtrans akan muncul dengan berbagai metode pembayaran
+5. Gunakan simulator pembayaran Midtrans Sandbox
+
+## Fitur Utama
+- ✅ **Bayar penuh atau cicilan** — siswa bisa menentukan nominal
+- ✅ **Resume pembayaran** — transaksi pending bisa dilanjutkan
+- ✅ **Auto-update status** — webhook otomatis memperbarui status tagihan
+- ✅ **Keamanan** — verifikasi signature dari Midtrans, CSRF exception khusus webhook
