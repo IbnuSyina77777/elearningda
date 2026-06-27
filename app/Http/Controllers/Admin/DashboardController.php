@@ -29,15 +29,21 @@ class DashboardController extends Controller
             ->keyBy('level');
 
         $totalAlumni = Student::where('status', 'alumni')->count();
-        $totalAlumniBillsAmount = Bill::join('students', 'bills.student_id', '=', 'students.id')
-            ->where('students.status', 'alumni')
-            ->sum('bills.amount');
-        $totalAlumniPaidAmount = Bill::join('students', 'bills.student_id', '=', 'students.id')
-            ->where('students.status', 'alumni')
-            ->sum('bills.total_paid');
+        $totalAlumniBillsAmount = Bill::whereHas('student', function($q) {
+            $q->where('status', 'alumni');
+        })->sum('amount');
 
-        $totalBillsAmount = Bill::sum('amount');
-        $totalPaidAmount = Bill::sum('total_paid');
+        $totalAlumniPaidAmount = Bill::whereHas('student', function($q) {
+            $q->where('status', 'alumni');
+        })->sum('total_paid');
+
+        $totalBillsAmount = Bill::whereHas('student', function($q) {
+            $q->where('status', '!=', 'alumni');
+        })->sum('amount');
+        
+        $totalPaidAmount = Bill::whereHas('student', function($q) {
+            $q->where('status', '!=', 'alumni');
+        })->sum('total_paid');
         $overdueCount = Bill::overdue()->count();
         
         $recentTransactions = Transaction::with(['bill.student'])
