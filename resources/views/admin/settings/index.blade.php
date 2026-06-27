@@ -24,7 +24,8 @@
             <!-- Tabs Navigation -->
             <div class="tabs mb-4" style="border-bottom: 1px solid var(--border-color); display: flex; gap: 16px;">
                 <button type="button" class="tab-btn active" data-target="#tab-sekolah" style="background: none; border: none; border-bottom: 2px solid var(--primary-600); padding: 8px 16px; font-weight: 600; color: var(--primary-600); cursor: pointer;">Identitas Sekolah</button>
-                <button type="button" class="tab-btn" data-target="#tab-aplikasi" style="background: none; border: none; border-bottom: 2px solid transparent; padding: 8px 16px; font-weight: 600; color: var(--text-muted); cursor: pointer;">Identitas Aplikasi & Tema</button>
+                <button type="button" class="tab-btn" data-target="#tab-aplikasi" style="background: none; border: none; border-bottom: 2px solid transparent; padding: 8px 16px; font-weight: 600; color: var(--text-muted); cursor: pointer;">Aplikasi & Tema</button>
+                <button type="button" class="tab-btn" data-target="#tab-landing" style="background: none; border: none; border-bottom: 2px solid transparent; padding: 8px 16px; font-weight: 600; color: var(--text-muted); cursor: pointer;">Landing Page</button>
             </div>
 
             <!-- Tab: Sekolah -->
@@ -120,6 +121,30 @@
                             <div class="text-sm text-muted mt-1">Biarkan kosong jika tidak ingin mengubah logo. (Disarankan PNG transparan, rasio 1:1)</div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Tab: Landing Page -->
+            <div id="tab-landing" class="tab-pane" style="display: none;">
+                <div class="form-group mb-3">
+                    <label class="form-label">Judul Hero (Hero Title)</label>
+                    <input type="text" name="landing_title" class="form-control" value="{{ $settings['landing_title'] ?? 'Selamat Datang di SMK Bisa Hebat' }}" placeholder="Contoh: Selamat Datang di SMK Negeri 1">
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label class="form-label">Tagline (Hero Subtitle)</label>
+                    <input type="text" name="landing_tagline" class="form-control" value="{{ $settings['landing_tagline'] ?? 'Mewujudkan Generasi Kompeten, Inovatif, dan Siap Kerja di Era Digital.' }}" placeholder="Slogan singkat di halaman depan">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label">Tentang Sekolah</label>
+                    <textarea name="landing_about" class="form-control" rows="4" placeholder="Deskripsi singkat mengenai sekolah Anda">{{ $settings['landing_about'] ?? 'Kami adalah institusi pendidikan kejuruan yang berkomitmen mencetak lulusan unggul dan berkarakter, didukung oleh fasilitas modern dan tenaga pengajar profesional.' }}</textarea>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label class="form-label">Program Keahlian (Jurusan)</label>
+                    <textarea name="landing_majors" class="form-control" rows="3" placeholder="Pisahkan dengan koma. Contoh: Rekayasa Perangkat Lunak, Teknik Komputer Jaringan, Akuntansi">{{ $settings['landing_majors'] ?? 'Rekayasa Perangkat Lunak, Teknik Komputer Jaringan, Akuntansi dan Keuangan Lembaga, Otomatisasi Tata Kelola Perkantoran' }}</textarea>
+                    <div class="text-sm text-muted mt-1">Gunakan tanda koma (,) untuk memisahkan setiap nama jurusan. Ini akan ditampilkan di bagian Program Keahlian.</div>
                 </div>
             </div>
         </div>
