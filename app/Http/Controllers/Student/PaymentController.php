@@ -114,7 +114,30 @@ class PaymentController extends Controller
      */
     public function finish(Request $request)
     {
+        $orderId = $request->query('order_id');
+
+        if ($orderId) {
+            $transaction = Transaction::where('order_id', $orderId)->first();
+            
+            // Jika status masih pending, kita proaktif cek ke Midtrans (fallback untuk Webhook yang gagal masuk di localhost)
+            if ($transaction && $transaction->status === 'pending') {
+                try {
+                    $status = \Midtrans\Transaction::status($orderId);
+                    
+                    if (in_array($status->transaction_status, ['capture', 'settlement'])) {
+                        $transaction->markAsSuccess((array) $status);
+                    } elseif (in_array($status->transaction_status, ['deny', 'cancel', 'failure'])) {
+                        $transaction->markAsFailed((array) $status);
+                    } elseif ($status->transaction_status === 'expire') {
+                        $transaction->markAsExpired((array) $status);
+                    }
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('Midtrans fallback status check error: ' . $e->getMessage());
+                }
+            }
+        }
+
         return redirect()->route('student.transactions.index')
-            ->with('success', 'Terima kasih! Status pembayaran Anda akan diperbarui secara otomatis.');
+            ->with('success', 'Terima kasih! Status pembayaran Anda telah diperbarui.');
     }
 }
