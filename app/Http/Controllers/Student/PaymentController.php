@@ -114,6 +114,8 @@ class PaymentController extends Controller
      */
     public function finish(Request $request)
     {
+        \Illuminate\Support\Facades\Log::info('Midtrans Finish Redirect Data:', $request->all());
+        
         $orderId = $request->query('order_id');
 
         if ($orderId) {

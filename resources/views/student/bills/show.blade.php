@@ -237,10 +237,10 @@
                 // Open Midtrans Snap popup
                 window.snap.pay(data.snap_token, {
                     onSuccess: function(result) {
-                        window.location.href = '{{ route("student.payment.finish") }}';
+                        window.location.href = '{{ route("student.payment.finish") }}?order_id=' + result.order_id;
                     },
                     onPending: function(result) {
-                        window.location.href = '{{ route("student.payment.finish") }}';
+                        window.location.href = '{{ route("student.payment.finish") }}?order_id=' + result.order_id;
                     },
                     onError: function(result) {
                         showError('Pembayaran gagal. Silakan coba lagi.');
@@ -262,10 +262,10 @@
                 const snapToken = this.dataset.snapToken;
                 window.snap.pay(snapToken, {
                     onSuccess: function(result) {
-                        window.location.href = '{{ route("student.payment.finish") }}';
+                        window.location.href = '{{ route("student.payment.finish") }}?order_id=' + result.order_id;
                     },
                     onPending: function(result) {
-                        window.location.reload();
+                        window.location.href = '{{ route("student.payment.finish") }}?order_id=' + result.order_id;
                     },
                     onError: function(result) {
                         showError('Pembayaran gagal.');
