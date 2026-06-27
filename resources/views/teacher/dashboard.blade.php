@@ -5,9 +5,17 @@
     <span class="current">Dashboard</span>
 @endsection
 @section('content')
-<div class="page-header">
-    <h1>Halo, {{ explode(' ', auth()->user()->name)[0] }}! 👋</h1>
-    <p>Selamat datang di portal E-Learning guru.</p>
+@php
+    $hour = (int) now()->format('H');
+    if ($hour >= 5 && $hour < 12) $greeting = 'Selamat Pagi';
+    elseif ($hour >= 12 && $hour < 15) $greeting = 'Selamat Siang';
+    elseif ($hour >= 15 && $hour < 18) $greeting = 'Selamat Sore';
+    else $greeting = 'Selamat Malam';
+    $emoji = $hour >= 5 && $hour < 18 ? '☀️' : '🌙';
+@endphp
+<div class="greeting-card">
+    <h1>{{ $greeting }}, {{ explode(' ', auth()->user()->name)[0] }}! {{ $emoji }}</h1>
+    <p>Selamat datang di portal E-Learning guru. Hari ini {{ now()->translatedFormat('l, d F Y') }}.</p>
 </div>
 
 @if($announcements->count() > 0)

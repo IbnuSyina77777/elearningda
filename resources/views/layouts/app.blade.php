@@ -340,7 +340,29 @@
         </main>
     </div>
 
+    {{-- Scroll to Top --}}
+    <button class="scroll-to-top" id="scrollToTop" title="Kembali ke atas">
+        <i class="ri-arrow-up-line"></i>
+    </button>
+
     <script src="{{ asset('js/app.js') }}"></script>
+    <script>
+        // Scroll to top button
+        (function() {
+            const btn = document.getElementById('scrollToTop');
+            if (!btn) return;
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 300) {
+                    btn.classList.add('visible');
+                } else {
+                    btn.classList.remove('visible');
+                }
+            });
+            btn.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        })();
+    </script>
     @stack('scripts')
 </body>
 </html>
