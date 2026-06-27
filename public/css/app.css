@@ -2309,3 +2309,60 @@ h6 { font-size: .9rem; }
     border-bottom: none;
 }
 
+/* Base Grid System for Forms */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -12px;
+    margin-right: -12px;
+}
+.row > [class^="col-"] {
+    padding-left: 12px;
+    padding-right: 12px;
+    width: 100%;
+}
+@media (min-width: 768px) {
+    .col-md-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+/* Additional Mobile Layout Fixes */
+.card, .table-container, .dashboard-grid > div {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.tabs {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+}
+.tabs::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+}
+
+@media (max-width: 768px) {
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .row > [class^="col-"] {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .form-group {
+        margin-bottom: 16px !important;
+    }
+    .topbar-right {
+        gap: 8px;
+    }
+    .topbar-user {
+        padding: 4px;
+    }
+}
+
