@@ -2281,3 +2281,31 @@ h6 { font-size: .9rem; }
         width: calc(100% - 32px);
     }
 }
+
+/* Table Details for Profile/View Pages */
+.table-details {
+    width: 100%;
+    border-collapse: collapse;
+}
+.table-details th,
+.table-details td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-color);
+    text-align: left;
+    vertical-align: top;
+    line-height: 1.5;
+}
+.table-details th {
+    color: var(--text-secondary);
+    font-weight: 500;
+    width: 35%;
+}
+.table-details td {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+.table-details tr:last-child th,
+.table-details tr:last-child td {
+    border-bottom: none;
+}
+
