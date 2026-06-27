@@ -59,6 +59,9 @@
                             </td>
                             <td class="text-center">
                                 <div class="btn-group justify-center">
+                                    <a href="{{ route('admin.classrooms.promotion', $room->id) }}" class="btn btn-sm btn-primary" data-tooltip="Kenaikan/Kelulusan">
+                                        <i class="ri-flight-takeoff-line"></i>
+                                    </a>
                                     <a href="{{ route('admin.classrooms.edit', $room->id) }}" class="btn btn-sm btn-secondary" data-tooltip="Edit">
                                         <i class="ri-edit-line"></i>
                                     </a>

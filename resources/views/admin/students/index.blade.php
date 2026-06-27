@@ -99,8 +99,12 @@
                                 <span class="text-muted text-sm">{{ $student->nis }}</span>
                             </td>
                             <td>
-                                <span class="badge badge-primary">{{ $student->classroom->name ?? '-' }}</span>
-                                <div class="text-muted text-sm mt-1">{{ $student->classroom->major->name ?? '-' }}</div>
+                                @if($student->status === 'alumni')
+                                    <span class="badge badge-success badge-dot">Alumni</span>
+                                @else
+                                    <span class="badge badge-primary">{{ $student->classroom->name ?? '-' }}</span>
+                                    <div class="text-muted text-sm mt-1">{{ $student->classroom->major->name ?? '-' }}</div>
+                                @endif
                             </td>
                             <td>
                                 <div>{{ $student->phone ?? '-' }}</div>

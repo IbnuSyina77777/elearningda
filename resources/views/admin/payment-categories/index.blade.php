@@ -40,6 +40,7 @@
                     <tr>
                         <th>Nama Kategori</th>
                         <th>Kode</th>
+                        <th>Tahun Ajaran</th>
                         <th>Nominal Default</th>
                         <th>Deskripsi</th>
                         <th class="text-center">Aksi</th>
@@ -55,6 +56,13 @@
                                 @endif
                             </td>
                             <td><span class="badge badge-primary">{{ $category->code }}</span></td>
+                            <td>
+                                @if($category->academicYear)
+                                    <span class="badge badge-info">{{ $category->academicYear->name }}</span>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                            </td>
                             <td style="font-weight:600;">Rp {{ number_format($category->default_amount, 0, ',', '.') }}</td>
                             <td><span class="text-muted">{{ Str::limit($category->description, 50) ?: '-' }}</span></td>
                             <td class="text-center">
@@ -74,7 +82,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center py-4 text-muted">Belum ada kategori pembayaran.</td>
+                            <td colspan="6" class="text-center py-4 text-muted">Belum ada kategori pembayaran.</td>
                         </tr>
                     @endforelse
                 </tbody>

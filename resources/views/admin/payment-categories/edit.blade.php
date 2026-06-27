@@ -29,9 +29,23 @@
                         <option value="UJIKOM" {{ old('name', $paymentCategory->name) == 'UJIKOM' || str_starts_with($paymentCategory->code, 'UJK') ? 'selected' : '' }}>Uji Kompetensi (UJIKOM)</option>
                         <option value="SERAGAM" {{ old('name', $paymentCategory->name) == 'SERAGAM' || str_starts_with($paymentCategory->code, 'SRG') ? 'selected' : '' }}>Seragam Siswa Baru (SERAGAM)</option>
                     </select>
-                    @error('name')<span class="form-error">{{ $message }}</span>@enderror
                 </div>
                 
+                <div class="form-group">
+                    <label class="form-label" for="academic_year_id">Tahun Ajaran <span class="required">*</span></label>
+                    <select id="academic_year_id" name="academic_year_id" class="form-control form-select @error('academic_year_id') is-invalid @enderror" required>
+                        <option value="">-- Pilih Tahun Ajaran --</option>
+                        @foreach($academicYears as $year)
+                            <option value="{{ $year->id }}" {{ (old('academic_year_id', $paymentCategory->academic_year_id) == $year->id) ? 'selected' : '' }}>
+                                {{ $year->name }} {{ $year->is_active ? '(Aktif)' : '' }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('academic_year_id')<span class="form-error">{{ $message }}</span>@enderror
+                </div>
+            </div>
+
+            <div class="form-row">
                 <div class="form-group">
                     <label class="form-label" for="semester">Semester <span class="required">*</span></label>
                     <select id="semester" name="semester" class="form-control form-select @error('semester') is-invalid @enderror" required>

@@ -14,7 +14,8 @@ class StudentController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Student::with(['user', 'classroom.major']);
+        $query = Student::with(['user', 'classroom.major'])
+            ->where('status', '!=', 'alumni');
 
         if ($request->has('search')) {
             $search = $request->search;
@@ -113,7 +114,7 @@ class StudentController extends Controller
             'password'     => 'nullable|string|min:8',
             'nisn'         => 'required|string|unique:students,nisn,' . $student->id,
             'nis'          => 'required|string|unique:students,nis,' . $student->id,
-            'classroom_id' => 'required|exists:classrooms,id',
+            'classroom_id' => 'nullable|exists:classrooms,id',
             'gender'       => 'required|in:L,P',
             'phone'        => 'nullable|string|max:20',
             'address'      => 'nullable|string',
@@ -137,7 +138,8 @@ class StudentController extends Controller
             $student->user->update($userData);
 
             $studentData = [
-                'classroom_id' => $validated['classroom_id'],
+                'classroom_id' => $validated['classroom_id'] ?? null,
+                'status'       => empty($validated['classroom_id']) ? 'alumni' : 'active',
                 'nisn'         => $validated['nisn'],
                 'nis'          => $validated['nis'],
                 'gender'       => $validated['gender'],

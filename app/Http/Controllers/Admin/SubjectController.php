@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
 use App\Models\Classroom;
+use App\Models\Major;
 use App\Models\Subject;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
@@ -27,19 +28,27 @@ class SubjectController extends Controller
             $query->where('level', $request->level);
         }
 
-        $subjects = $query->latest()->paginate(15)->withQueryString();
+        $subjects = $query->with('major')->orderBy('level')->orderBy('name')->get();
 
-        return view('admin.subjects.index', compact('subjects'));
+        $groupedSubjects = [
+            'X'   => $subjects->where('level', 'X'),
+            'XI'  => $subjects->where('level', 'XI'),
+            'XII' => $subjects->where('level', 'XII'),
+        ];
+
+        return view('admin.subjects.index', compact('groupedSubjects'));
     }
 
     public function create()
     {
-        return view('admin.subjects.create');
+        $majors = Major::active()->get();
+        return view('admin.subjects.create', compact('majors'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'major_id'    => 'nullable|exists:majors,id',
             'name'        => 'required|string|max:255',
             'code'        => 'required|string|max:50|unique:subjects,code',
             'level'       => 'required|in:X,XI,XII',
@@ -55,12 +64,14 @@ class SubjectController extends Controller
 
     public function edit(Subject $subject)
     {
-        return view('admin.subjects.edit', compact('subject'));
+        $majors = Major::active()->get();
+        return view('admin.subjects.edit', compact('subject', 'majors'));
     }
 
     public function update(Request $request, Subject $subject)
     {
         $validated = $request->validate([
+            'major_id'    => 'nullable|exists:majors,id',
             'name'        => 'required|string|max:255',
             'code'        => 'required|string|max:50|unique:subjects,code,' . $subject->id,
             'level'       => 'required|in:X,XI,XII',

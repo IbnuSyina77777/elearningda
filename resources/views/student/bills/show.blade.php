@@ -61,6 +61,7 @@
                             {{ $bill->due_date->format('d M Y') }}
                             @if($bill->due_date < now() && $bill->status !== 'paid')
                                 <span class="badge badge-danger badge-dot ml-1" title="Lewat Jatuh Tempo"></span>
+                                <div class="text-sm text-danger mt-1">Lewat dari jatuh tempo. Jangan khawatir, Anda masih tetap bisa melakukan pembayaran seperti biasa.</div>
                             @endif
                         </td>
                     </tr>

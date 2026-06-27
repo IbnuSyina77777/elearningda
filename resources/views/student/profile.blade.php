@@ -30,10 +30,14 @@
                 @endif
 
                 <h2 style="margin: 0; font-size: 1.4rem; text-align: center;">{{ $student->user->name ?? '-' }}</h2>
-                <p style="color: var(--text-secondary); margin: 0.25rem 0 0.75rem;">Siswa Aktif</p>
+                <p style="color: var(--text-secondary); margin: 0.25rem 0 0.75rem;">{{ $student->status === 'alumni' ? 'Lulus (Alumni)' : 'Siswa Aktif' }}</p>
 
                 <div class="d-flex gap-sm flex-wrap" style="justify-content: center;">
-                    <span class="badge badge-primary" style="font-size: 0.85rem; padding: 6px 14px;">{{ $student->classroom->name ?? '-' }}</span>
+                    @if($student->status === 'alumni')
+                        <span class="badge badge-success" style="font-size: 0.85rem; padding: 6px 14px;">Lulus / Alumni</span>
+                    @else
+                        <span class="badge badge-primary" style="font-size: 0.85rem; padding: 6px 14px;">{{ $student->classroom->name ?? '-' }}</span>
+                    @endif
                     <span class="badge badge-secondary" style="font-size: 0.85rem; padding: 6px 14px;">{{ $student->gender === 'L' ? 'Laki-laki' : 'Perempuan' }}</span>
                 </div>
             </div>
@@ -73,7 +77,11 @@
                     <tr>
                         <th>Kelas</th>
                         <td>
-                            <span class="badge badge-primary">{{ $student->classroom->name ?? '-' }}</span>
+                            @if($student->status === 'alumni')
+                                <span class="badge badge-success">Alumni</span>
+                            @else
+                                <span class="badge badge-primary">{{ $student->classroom->name ?? '-' }}</span>
+                            @endif
                         </td>
                     </tr>
                     <tr>

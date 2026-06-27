@@ -60,6 +60,10 @@
                         <span class="sidebar-link-icon"><i class="ri-user-3-line"></i></span>
                         Data Siswa
                     </a>
+                    <a href="{{ route('admin.alumni.index') }}" class="sidebar-link {{ request()->routeIs('admin.alumni.*') ? 'active' : '' }}">
+                        <span class="sidebar-link-icon"><i class="ri-graduation-cap-line"></i></span>
+                        Data Alumni
+                    </a>
                     <a href="{{ route('admin.teachers.index') }}" class="sidebar-link {{ request()->routeIs('admin.teachers.*') ? 'active' : '' }}">
                         <span class="sidebar-link-icon"><i class="ri-user-star-line"></i></span>
                         Data Guru
@@ -72,8 +76,16 @@
                         <span class="sidebar-link-icon"><i class="ri-book-open-line"></i></span>
                         Mata Pelajaran
                     </a>
+                    <a href="{{ route('admin.assignments.index') }}" class="sidebar-link {{ request()->routeIs('admin.assignments.*') ? 'active' : '' }}">
+                        <span class="sidebar-link-icon"><i class="ri-task-line"></i></span>
+                        Tugas
+                    </a>
+                    <a href="{{ route('admin.schedules.index') }}" class="sidebar-link {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}">
+                        <span class="sidebar-link-icon"><i class="ri-calendar-todo-line"></i></span>
+                        Jadwal Pelajaran
+                    </a>
                     <a href="{{ route('admin.academic-years.index') }}" class="sidebar-link {{ request()->routeIs('admin.academic-years.*') ? 'active' : '' }}">
-                        <span class="sidebar-link-icon"><i class="ri-calendar-schedule-line"></i></span>
+                        <span class="sidebar-link-icon"><i class="ri-calendar-event-line"></i></span>
                         Tahun Ajaran
                     </a>
 
@@ -127,6 +139,14 @@
                     <a href="{{ route('teacher.administrations.index') }}" class="sidebar-link {{ request()->routeIs('teacher.administrations.*') ? 'active' : '' }}">
                         <span class="sidebar-link-icon"><i class="ri-folder-chart-line"></i></span>
                         Administrasi Mengajar
+                    </a>
+                    <a href="{{ route('teacher.grades.index') }}" class="sidebar-link {{ request()->routeIs('teacher.grades.*') ? 'active' : '' }}">
+                        <span class="sidebar-link-icon"><i class="ri-bar-chart-box-line"></i></span>
+                        Input Nilai Akhir
+                    </a>
+                    <a href="{{ route('teacher.schedules.index') }}" class="sidebar-link {{ request()->routeIs('teacher.schedules.*') ? 'active' : '' }}">
+                        <span class="sidebar-link-icon"><i class="ri-calendar-todo-line"></i></span>
+                        Jadwal Mengajar
                     </a>
 
                     <span class="sidebar-menu-label">E-Learning</span>
@@ -192,8 +212,12 @@
                     </a>
                     
                     <a href="{{ route('student.transcript.index') }}" class="sidebar-link {{ request()->routeIs('student.transcript.*') ? 'active' : '' }}">
-                        <span class="sidebar-link-icon"><i class="ri-bar-chart-box-line"></i></span>
-                        Transkrip Nilai
+                        <span class="sidebar-link-icon"><i class="ri-file-list-3-line"></i></span>
+                        Rekap Nilai
+                    </a>
+                    <a href="{{ route('student.schedules.index') }}" class="sidebar-link {{ request()->routeIs('student.schedules.*') ? 'active' : '' }}">
+                        <span class="sidebar-link-icon"><i class="ri-calendar-todo-line"></i></span>
+                        Jadwal Pelajaran
                     </a>
 
                     <span class="sidebar-menu-label">Pembayaran</span>

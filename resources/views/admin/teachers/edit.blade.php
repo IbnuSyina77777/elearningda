@@ -45,16 +45,35 @@
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label" for="position">Jabatan</label>
-                    <select id="position" name="position" class="form-control form-select @error('position') is-invalid @enderror">
-                        <option value="Guru Mata Pelajaran" {{ old('position', $teacher->position) == 'Guru Mata Pelajaran' ? 'selected' : '' }}>Guru Mata Pelajaran</option>
-                        <option value="Wali Kelas" {{ old('position', $teacher->position) == 'Wali Kelas' ? 'selected' : '' }}>Wali Kelas</option>
-                        <option value="Kepala Sekolah" {{ old('position', $teacher->position) == 'Kepala Sekolah' ? 'selected' : '' }}>Kepala Sekolah</option>
-                        <option value="Staf Tata Usaha" {{ old('position', $teacher->position) == 'Staf Tata Usaha' ? 'selected' : '' }}>Staf Tata Usaha</option>
+                    <label class="form-label" for="position">Jabatan (Bisa pilih lebih dari satu)</label>
+                    <select id="position" name="position[]" class="form-control form-select @error('position') is-invalid @enderror" multiple size="6">
+                        @php $oldPos = old('position', $teacher->position ?? []); @endphp
+                        <optgroup label="Manajemen Sekolah">
+                            <option value="Kepala Sekolah" {{ in_array('Kepala Sekolah', $oldPos) ? 'selected' : '' }}>Kepala Sekolah</option>
+                            <option value="Wakasek Kurikulum" {{ in_array('Wakasek Kurikulum', $oldPos) ? 'selected' : '' }}>Wakasek Kurikulum</option>
+                            <option value="Wakasek Kesiswaan" {{ in_array('Wakasek Kesiswaan', $oldPos) ? 'selected' : '' }}>Wakasek Kesiswaan</option>
+                            <option value="Wakasek Hubin / Humas" {{ in_array('Wakasek Hubin / Humas', $oldPos) ? 'selected' : '' }}>Wakasek Hubin / Humas</option>
+                            <option value="Wakasek Sarana Prasarana" {{ in_array('Wakasek Sarana Prasarana', $oldPos) ? 'selected' : '' }}>Wakasek Sarana Prasarana</option>
+                        </optgroup>
+                        <optgroup label="Kejuruan & Bimbingan">
+                            <option value="Kepala Program Keahlian (Kajur)" {{ in_array('Kepala Program Keahlian (Kajur)', $oldPos) ? 'selected' : '' }}>Kepala Program Keahlian (Kajur)</option>
+                            <option value="Kepala Bengkel / Laboratorium" {{ in_array('Kepala Bengkel / Laboratorium', $oldPos) ? 'selected' : '' }}>Kepala Bengkel / Laboratorium</option>
+                            <option value="Guru Bimbingan Konseling (BK)" {{ in_array('Guru Bimbingan Konseling (BK)', $oldPos) ? 'selected' : '' }}>Guru Bimbingan Konseling (BK)</option>
+                        </optgroup>
+                        <optgroup label="Tenaga Pendidik">
+                            <option value="Wali Kelas" {{ in_array('Wali Kelas', $oldPos) ? 'selected' : '' }}>Wali Kelas</option>
+                            <option value="Guru Produktif / Kejuruan" {{ in_array('Guru Produktif / Kejuruan', $oldPos) ? 'selected' : '' }}>Guru Produktif / Kejuruan</option>
+                            <option value="Guru Mata Pelajaran" {{ in_array('Guru Mata Pelajaran', $oldPos) ? 'selected' : '' }}>Guru Mata Pelajaran Umum</option>
+                        </optgroup>
+                        <optgroup label="Tenaga Kependidikan">
+                            <option value="Staf Tata Usaha (TU)" {{ in_array('Staf Tata Usaha (TU)', $oldPos) ? 'selected' : '' }}>Staf Tata Usaha (TU)</option>
+                            <option value="Pustakawan" {{ in_array('Pustakawan', $oldPos) ? 'selected' : '' }}>Pustakawan</option>
+                        </optgroup>
                     </select>
                     @error('position')<span class="form-error">{{ $message }}</span>@enderror
+                    <small class="text-muted">Gunakan Ctrl/Cmd + Klik untuk memilih lebih dari satu jabatan.</small>
                 </div>
-                <div class="form-group" id="classroom_group" style="display: {{ old('position', $teacher->position) == 'Wali Kelas' ? 'block' : 'none' }};">
+                <div class="form-group" id="classroom_group" style="display: {{ in_array('Wali Kelas', $oldPos) ? 'block' : 'none' }};">
                     <label class="form-label" for="classroom_id">Pilih Kelas</label>
                     <select id="classroom_id" name="classroom_id" class="form-control form-select @error('classroom_id') is-invalid @enderror">
                         <option value="">-- Pilih Kelas --</option>
@@ -64,21 +83,43 @@
                     </select>
                     @error('classroom_id')<span class="form-error">{{ $message }}</span>@enderror
                 </div>
-                <div class="form-group" id="taught_classes_group" style="display: {{ in_array(old('position', $teacher->position), ['Guru Mata Pelajaran', 'Wali Kelas']) || !old('position', $teacher->position) ? 'block' : 'none' }};">
-                    <label class="form-label" for="taught_classes">Kelas yang Diajar</label>
+                <div class="form-group" id="major_group" style="display: {{ (in_array('Kepala Program Keahlian (Kajur)', $oldPos) || in_array('Kepala Bengkel / Laboratorium', $oldPos)) ? 'block' : 'none' }};">
+                    <label class="form-label" for="major_id">Pilih Jurusan <span class="required">*</span></label>
+                    <select id="major_id" name="major_id" class="form-control form-select @error('major_id') is-invalid @enderror">
+                        <option value="">-- Pilih Jurusan --</option>
+                        @foreach($majors as $major)
+                            <option value="{{ $major->id }}" {{ old('major_id', $teacher->major_id) == $major->id ? 'selected' : '' }}>{{ $major->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('major_id')<span class="form-error">{{ $message }}</span>@enderror
+                </div>
+                @php
+                    $nonTeaching = ['Kepala Sekolah', 'Wakasek Kurikulum', 'Wakasek Kesiswaan', 'Wakasek Hubin / Humas', 'Wakasek Sarana Prasarana', 'Staf Tata Usaha (TU)', 'Pustakawan', 'Kepala Bengkel / Laboratorium', 'Kepala Program Keahlian (Kajur)'];
+                    $hasTeaching = count(array_diff($oldPos, $nonTeaching)) > 0;
+                @endphp
+                <div class="form-group" id="taught_classes_group" style="display: {{ $hasTeaching ? 'block' : 'none' }};">
+                    <div class="d-flex justify-between align-center mb-1 flex-wrap gap-xs">
+                        <label class="form-label mb-0" for="taught_classes">Kelas yang Diajar</label>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-outline" id="btn_select_x" style="padding: 2px 6px; font-size: 0.75rem;" data-tooltip="Pilih / Batal Kelas X">Kelas X</button>
+                            <button type="button" class="btn btn-sm btn-outline" id="btn_select_xi" style="padding: 2px 6px; font-size: 0.75rem;" data-tooltip="Pilih / Batal Kelas XI">Kelas XI</button>
+                            <button type="button" class="btn btn-sm btn-outline" id="btn_select_xii" style="padding: 2px 6px; font-size: 0.75rem;" data-tooltip="Pilih / Batal Kelas XII">Kelas XII</button>
+                            <button type="button" class="btn btn-sm btn-outline" id="btn_select_all_classes" style="padding: 2px 6px; font-size: 0.75rem;" data-tooltip="Pilih / Batal Semua">Semua</button>
+                        </div>
+                    </div>
                     <select id="taught_classes" name="taught_classes[]" class="form-control form-select @error('taught_classes') is-invalid @enderror" multiple style="height: 120px;">
                         @foreach($classrooms as $room)
-                            <option value="{{ $room->id }}" data-level="{{ $room->level }}" {{ in_array($room->id, old('taught_classes', $teacher->taughtClassrooms->pluck('id')->toArray())) ? 'selected' : '' }}>{{ $room->name }}</option>
+                            <option value="{{ $room->id }}" data-level="{{ $room->level }}" data-major="{{ $room->major_id }}" {{ in_array($room->id, old('taught_classes', $teacher->taughtClassrooms->pluck('id')->toArray())) ? 'selected' : '' }}>{{ $room->name }}</option>
                         @endforeach
                     </select>
                     <span class="form-hint">Tahan tombol Ctrl/Command untuk memilih lebih dari satu.</span>
                     @error('taught_classes')<span class="form-error">{{ $message }}</span>@enderror
                 </div>
-                <div class="form-group" id="taught_subjects_group" style="display: {{ in_array(old('position', $teacher->position), ['Guru Mata Pelajaran', 'Wali Kelas']) || !old('position', $teacher->position) ? 'block' : 'none' }};">
+                <div class="form-group" id="taught_subjects_group" style="display: {{ $hasTeaching ? 'block' : 'none' }};">
                     <label class="form-label" for="taught_subjects">Mata Pelajaran yang Diampu</label>
                     <select id="taught_subjects" name="taught_subjects[]" class="form-control form-select @error('taught_subjects') is-invalid @enderror" multiple style="height: 120px;">
                         @foreach($subjects as $subject)
-                            <option value="{{ $subject->id }}" data-level="{{ $subject->level }}" {{ in_array($subject->id, old('taught_subjects', $teacher->taughtSubjects->pluck('id')->toArray())) ? 'selected' : '' }}>{{ $subject->name }} (Kelas {{ $subject->level }})</option>
+                            <option value="{{ $subject->id }}" data-level="{{ $subject->level }}" data-major="{{ $subject->major_id }}" {{ in_array($subject->id, old('taught_subjects', $teacher->taughtSubjects->pluck('id')->toArray())) ? 'selected' : '' }}>{{ $subject->name }} (Kelas {{ $subject->level }})</option>
                         @endforeach
                     </select>
                     <span class="form-hint">Pilih mata pelajaran yang diampu.</span>
@@ -119,6 +160,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         const positionSelect = document.getElementById('position');
         const classroomGroup = document.getElementById('classroom_group');
+        const majorGroup = document.getElementById('major_group');
         const taughtClassesGroup = document.getElementById('taught_classes_group');
 
         const taughtSubjectsGroup = document.getElementById('taught_subjects_group');
@@ -126,36 +168,78 @@
         const taughtClassesSelect = document.getElementById('taught_classes');
         const classOptions = Array.from(taughtClassesSelect.options);
 
+        const subjectOptions = Array.from(taughtSubjectsSelect.options);
+
         function toggleGroups() {
-            if (positionSelect.value === 'Wali Kelas') {
+            const selectedOptions = Array.from(positionSelect.selectedOptions).map(opt => opt.value);
+            
+            if (selectedOptions.includes('Wali Kelas')) {
                 classroomGroup.style.display = 'block';
-                taughtClassesGroup.style.display = 'block';
-                taughtSubjectsGroup.style.display = 'block';
-            } else if (positionSelect.value === 'Guru Mata Pelajaran' || positionSelect.value === '') {
-                classroomGroup.style.display = 'none';
-                taughtClassesGroup.style.display = 'block';
-                taughtSubjectsGroup.style.display = 'block';
             } else {
                 classroomGroup.style.display = 'none';
+            }
+
+            if (selectedOptions.includes('Kepala Program Keahlian (Kajur)') || selectedOptions.includes('Kepala Bengkel / Laboratorium')) {
+                majorGroup.style.display = 'block';
+            } else {
+                majorGroup.style.display = 'none';
+            }
+            
+            const nonTeachingPositions = ['Kepala Sekolah', 'Wakasek Kurikulum', 'Wakasek Kesiswaan', 'Wakasek Hubin / Humas', 'Wakasek Sarana Prasarana', 'Staf Tata Usaha (TU)', 'Pustakawan', 'Kepala Bengkel / Laboratorium', 'Kepala Program Keahlian (Kajur)'];
+            let hasTeaching = false;
+            for (let i = 0; i < selectedOptions.length; i++) {
+                if (!nonTeachingPositions.includes(selectedOptions[i])) {
+                    hasTeaching = true;
+                    break;
+                }
+            }
+            
+            if (!hasTeaching && selectedOptions.length > 0) {
                 taughtClassesGroup.style.display = 'none';
                 taughtSubjectsGroup.style.display = 'none';
+            } else {
+                taughtClassesGroup.style.display = 'block';
+                taughtSubjectsGroup.style.display = 'block';
             }
         }
 
-        function filterClassesBySubjectLevel() {
-            const selectedLevels = Array.from(taughtSubjectsSelect.selectedOptions).map(opt => opt.getAttribute('data-level'));
+        function filterSubjectsByClass() {
+            const selectedClasses = Array.from(taughtClassesSelect.selectedOptions).map(opt => ({
+                level: opt.getAttribute('data-level'),
+                major: opt.getAttribute('data-major')
+            }));
             
-            if (selectedLevels.length === 0) {
-                classOptions.forEach(opt => {
-                    opt.style.display = '';
-                    opt.disabled = false;
+            if (selectedClasses.length === 0) {
+                subjectOptions.forEach(opt => {
+                    opt.style.display = 'none';
+                    opt.disabled = true;
+                    // Dont forcefully deselect on edit if they just deselected all classes temporarily, but usually we do:
+                    // opt.selected = false;
                 });
                 return;
             }
 
-            classOptions.forEach(opt => {
-                const classLevel = opt.getAttribute('data-level');
-                if (selectedLevels.includes(classLevel)) {
+            const selectedPositions = Array.from(positionSelect.selectedOptions).map(opt => opt.value);
+
+            subjectOptions.forEach(opt => {
+                const subLevel = opt.getAttribute('data-level');
+                const subMajor = opt.getAttribute('data-major');
+                
+                let isValid = selectedClasses.some(cls => {
+                    return subLevel === cls.level && (subMajor === "" || subMajor === cls.major);
+                });
+                
+                if (isValid) {
+                    if (selectedPositions.includes('Guru Mata Pelajaran') && !selectedPositions.includes('Guru Produktif / Kejuruan')) {
+                        // Hanya mapel Umum
+                        if (subMajor !== "") isValid = false;
+                    } else if (selectedPositions.includes('Guru Produktif / Kejuruan') && !selectedPositions.includes('Guru Mata Pelajaran')) {
+                        // Hanya mapel Produktif
+                        if (subMajor === "") isValid = false;
+                    }
+                }
+                
+                if (isValid) {
                     opt.style.display = '';
                     opt.disabled = false;
                 } else {
@@ -166,11 +250,43 @@
             });
         }
 
+        const btnSelectAllClasses = document.getElementById('btn_select_all_classes');
+        const btnSelectX = document.getElementById('btn_select_x');
+        const btnSelectXI = document.getElementById('btn_select_xi');
+        const btnSelectXII = document.getElementById('btn_select_xii');
+
+        function toggleClassesByLevel(levelStr) {
+            const levelOptions = classOptions.filter(opt => opt.getAttribute('data-level') === levelStr);
+            if (levelOptions.length === 0) return;
+            const isAllSelected = levelOptions.every(opt => opt.selected);
+            levelOptions.forEach(opt => opt.selected = !isAllSelected);
+            taughtClassesSelect.dispatchEvent(new Event('change'));
+        }
+
+        if (btnSelectX) btnSelectX.addEventListener('click', () => toggleClassesByLevel('X'));
+        if (btnSelectXI) btnSelectXI.addEventListener('click', () => toggleClassesByLevel('XI'));
+        if (btnSelectXII) btnSelectXII.addEventListener('click', () => toggleClassesByLevel('XII'));
+
+        if (btnSelectAllClasses) {
+            btnSelectAllClasses.addEventListener('click', function() {
+                const isAllSelected = classOptions.every(opt => opt.selected);
+                classOptions.forEach(opt => opt.selected = !isAllSelected);
+                this.textContent = isAllSelected ? 'Semua' : 'Batal Semua';
+                taughtClassesSelect.dispatchEvent(new Event('change'));
+            });
+
+            taughtClassesSelect.addEventListener('change', function() {
+                const isAllSelected = classOptions.length > 0 && classOptions.every(opt => opt.selected);
+                btnSelectAllClasses.textContent = isAllSelected ? 'Batal Semua' : 'Semua';
+            });
+        }
+
         positionSelect.addEventListener('change', toggleGroups);
-        taughtSubjectsSelect.addEventListener('change', filterClassesBySubjectLevel);
+        positionSelect.addEventListener('change', filterSubjectsByClass);
+        taughtClassesSelect.addEventListener('change', filterSubjectsByClass);
         
         toggleGroups(); // Run on load to set initial state
-        filterClassesBySubjectLevel(); // Run on load for old inputs
+        filterSubjectsByClass(); // Run on load for old inputs
     });
 </script>
 @endsection

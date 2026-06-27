@@ -113,7 +113,7 @@
                 @endif
                 <div class="profile-info">
                     <h2>{{ auth()->user()->name }}</h2>
-                    <p>NIS: {{ $student->nis }} &bull; {{ $student->classroom->name ?? 'Unknown Class' }}</p>
+                    <p>NIS: {{ $student->nis }} &bull; {{ $student->status === 'alumni' ? 'Lulus (Alumni)' : ($student->classroom->name ?? 'Unknown Class') }}</p>
                 </div>
             </div>
             <div class="card-footer" style="background:#fff;">

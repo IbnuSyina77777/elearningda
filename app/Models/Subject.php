@@ -12,6 +12,7 @@ class Subject extends Model
     use HasFactory;
 
     protected $fillable = [
+        'major_id',
         'name',
         'code',
         'description',
@@ -24,6 +25,11 @@ class Subject extends Model
         return [
             'is_active' => 'boolean',
         ];
+    }
+
+    public function major(): BelongsTo
+    {
+        return $this->belongsTo(Major::class);
     }
 
     public function taughtBy()

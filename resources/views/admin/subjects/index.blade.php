@@ -24,50 +24,70 @@
             @endif
         </form>
     </div>
-    <div class="card-body p-0">
-        <div class="table-container" style="border:none;box-shadow:none;border-radius:0;">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Mata Pelajaran</th>
-                        <th>Kode</th>
-                        <th>Jenjang</th>
-                        <th>Status</th>
-                        <th class="text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($subjects as $subject)
-                        <tr>
-                            <td><strong>{{ $subject->name }}</strong></td>
-                            <td><code>{{ $subject->code }}</code></td>
-                            <td><span class="badge badge-primary">Kelas {{ $subject->level }}</span></td>
-                            <td>
-                                @if($subject->is_active)
-                                    <span class="badge badge-success">Aktif</span>
-                                @else
-                                    <span class="badge badge-secondary">Nonaktif</span>
-                                @endif
-                            </td>
-                            <td class="text-center">
-                                <div class="btn-group justify-center">
-                                    <a href="{{ route('admin.subjects.edit', $subject->id) }}" class="btn btn-sm btn-secondary" data-tooltip="Edit"><i class="ri-pencil-line"></i></a>
-                                    <form action="{{ route('admin.subjects.destroy', $subject->id) }}" method="POST" style="display:inline-block;">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-secondary text-danger" data-confirm="Hapus mapel ini?" data-tooltip="Hapus"><i class="ri-delete-bin-line"></i></button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr><td colspan="6" class="text-center py-4 text-muted">Belum ada data mata pelajaran.</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
     </div>
-    @if($subjects->hasPages())
-        <div class="card-footer" style="background:#fff;">{{ $subjects->links('pagination::bootstrap-4') }}</div>
-    @endif
+</div>
+
+<div class="dashboard-grid">
+    @foreach(['X', 'XI', 'XII'] as $level)
+        <div class="card">
+            <div class="card-header" style="background: var(--primary-50); border-bottom: 2px solid var(--primary-500);">
+                <h3 style="color: var(--primary-700);"><i class="ri-book-3-line"></i> Jenjang Kelas {{ $level }}</h3>
+            </div>
+            <div class="card-body p-0">
+                @php
+                    $levelSubjects = $groupedSubjects[$level] ?? collect();
+                @endphp
+                
+                @if($levelSubjects->count() > 0)
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Mata Pelajaran</th>
+                                <th>Kode</th>
+                                <th>Jurusan</th>
+                                <th>Status</th>
+                                <th class="text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($levelSubjects as $subject)
+                                <tr>
+                                    <td><strong>{{ $subject->name }}</strong></td>
+                                    <td><code>{{ $subject->code }}</code></td>
+                                    <td>
+                                        @if($subject->major)
+                                            <span class="badge badge-info">{{ $subject->major->code }}</span>
+                                        @else
+                                            <span class="badge badge-secondary">Umum</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($subject->is_active)
+                                            <span class="badge badge-success">Aktif</span>
+                                        @else
+                                            <span class="badge badge-secondary">Nonaktif</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group justify-center">
+                                            <a href="{{ route('admin.subjects.edit', $subject->id) }}" class="btn btn-sm btn-secondary" data-tooltip="Edit"><i class="ri-pencil-line"></i></a>
+                                            <form action="{{ route('admin.subjects.destroy', $subject->id) }}" method="POST" style="display:inline-block;">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-secondary text-danger" data-confirm="Hapus mapel ini?" data-tooltip="Hapus"><i class="ri-delete-bin-line"></i></button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <div class="p-4 text-center text-muted">
+                        <em>Belum ada mata pelajaran untuk Kelas {{ $level }}.</em>
+                    </div>
+                @endif
+            </div>
+        </div>
+    @endforeach
 </div>
 @endsection

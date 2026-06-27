@@ -35,14 +35,26 @@
                     </tr>
                     <tr>
                         <td style="color:var(--text-secondary);">Kelas</td>
-                        <td>{{ $bill->student->classroom->name ?? 'N/A' }}</td>
+                        <td>
+                            @if($bill->student && $bill->student->status === 'alumni')
+                                <span class="badge badge-success">Lulus (Alumni)</span>
+                            @else
+                                {{ $bill->student->classroom->name ?? 'N/A' }}
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="2"><hr style="border:0;border-top:1px solid var(--border-color);margin:4px 0;"></td>
                     </tr>
                     <tr>
                         <td style="color:var(--text-secondary);">Kategori</td>
-                        <td>{{ $bill->paymentCategory->name ?? 'N/A' }} ({{ $bill->academicYear->name ?? 'N/A' }})</td>
+                        <td>
+                            {{ $bill->paymentCategory->name ?? 'N/A' }} 
+                            @if($bill->paymentCategory && $bill->paymentCategory->semester)
+                                <span class="badge badge-info" style="font-size:0.7rem;">Semester {{ $bill->paymentCategory->semester }}</span>
+                            @endif
+                            ({{ $bill->academicYear->name ?? 'N/A' }})
+                        </td>
                     </tr>
                     <tr>
                         <td style="color:var(--text-secondary);">Jatuh Tempo</td>

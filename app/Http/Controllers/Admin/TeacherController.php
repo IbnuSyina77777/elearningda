@@ -27,15 +27,43 @@ class TeacherController extends Controller
             });
         }
 
-        $teachers = $query->latest()->paginate(15)->withQueryString();
-        return view('admin.teachers.index', compact('teachers'));
+        $teachers = $query->orderBy('nip')->get();
+
+        $groupedTeachers = [
+            'X' => collect(),
+            'XI' => collect(),
+            'XII' => collect(),
+            'Lainnya' => collect(),
+        ];
+
+        foreach ($teachers as $teacher) {
+            $levels = $teacher->taughtClassrooms->pluck('level')->unique()->toArray();
+            
+            // Jika dia Wali Kelas tapi belum punya taughtClassrooms (misal data lama), coba cek homeroomClass
+            if (empty($levels) && $teacher->homeroomClass) {
+                $levels[] = $teacher->homeroomClass->level;
+            }
+
+            if (empty($levels)) {
+                $groupedTeachers['Lainnya']->push($teacher);
+            } else {
+                foreach (array_unique($levels) as $level) {
+                    if (isset($groupedTeachers[$level])) {
+                        $groupedTeachers[$level]->push($teacher);
+                    }
+                }
+            }
+        }
+
+        return view('admin.teachers.index', compact('groupedTeachers'));
     }
 
     public function create()
     {
         $classrooms = Classroom::orderBy('name')->get();
         $subjects = \App\Models\Subject::orderBy('name')->get();
-        return view('admin.teachers.create', compact('classrooms', 'subjects'));
+        $majors = \App\Models\Major::active()->orderBy('name')->get();
+        return view('admin.teachers.create', compact('classrooms', 'subjects', 'majors'));
     }
 
     public function store(Request $request)
@@ -49,12 +77,14 @@ class TeacherController extends Controller
             'address'        => 'nullable|string',
             'photo'          => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'specialization' => 'nullable|string|max:255',
-            'position'       => 'nullable|string|max:255',
+            'position'       => 'nullable|array',
+            'position.*'     => 'string|max:255',
             'classroom_id'   => 'nullable|exists:classrooms,id',
             'taught_classes' => 'nullable|array',
             'taught_classes.*'=> 'exists:classrooms,id',
             'taught_subjects'=> 'nullable|array',
             'taught_subjects.*'=> 'exists:subjects,id',
+            'major_id'       => 'nullable|exists:majors,id',
         ]);
 
         try {
@@ -79,11 +109,15 @@ class TeacherController extends Controller
                 'address'        => $validated['address'],
                 'photo'          => $photoPath,
                 'specialization' => $validated['specialization'],
-                'position'       => $validated['position'] ?? 'Guru Mata Pelajaran',
-                'classroom_id'   => $validated['position'] == 'Wali Kelas' ? $validated['classroom_id'] : null,
+                'position'       => $validated['position'] ?? ['Guru Mata Pelajaran'],
+                'classroom_id'   => in_array('Wali Kelas', $validated['position'] ?? []) ? $validated['classroom_id'] : null,
+                'major_id'       => (in_array('Kepala Program Keahlian (Kajur)', $validated['position'] ?? []) || in_array('Kepala Bengkel / Laboratorium', $validated['position'] ?? [])) ? $validated['major_id'] : null,
             ]);
 
-            if (in_array($validated['position'] ?? 'Guru Mata Pelajaran', ['Guru Mata Pelajaran', 'Wali Kelas'])) {
+            $nonTeaching = ['Kepala Sekolah', 'Wakasek Kurikulum', 'Wakasek Kesiswaan', 'Wakasek Hubin / Humas', 'Wakasek Sarana Prasarana', 'Staf Tata Usaha (TU)', 'Pustakawan', 'Kepala Bengkel / Laboratorium', 'Kepala Program Keahlian (Kajur)'];
+            $positions = $validated['position'] ?? ['Guru Mata Pelajaran'];
+            $hasTeachingPosition = count(array_diff($positions, $nonTeaching)) > 0;
+            if ($hasTeachingPosition) {
                 if (!empty($validated['taught_classes'])) {
                     $teacher->taughtClassrooms()->sync($validated['taught_classes']);
                 }
@@ -105,7 +139,8 @@ class TeacherController extends Controller
         $teacher->load('user', 'homeroomClass', 'taughtClassrooms', 'taughtSubjects');
         $classrooms = Classroom::orderBy('name')->get();
         $subjects = \App\Models\Subject::orderBy('name')->get();
-        return view('admin.teachers.edit', compact('teacher', 'classrooms', 'subjects'));
+        $majors = \App\Models\Major::active()->orderBy('name')->get();
+        return view('admin.teachers.edit', compact('teacher', 'classrooms', 'subjects', 'majors'));
     }
 
     public function update(Request $request, Teacher $teacher)
@@ -119,12 +154,14 @@ class TeacherController extends Controller
             'address'        => 'nullable|string',
             'photo'          => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'specialization' => 'nullable|string|max:255',
-            'position'       => 'nullable|string|max:255',
+            'position'       => 'nullable|array',
+            'position.*'     => 'string|max:255',
             'classroom_id'   => 'nullable|exists:classrooms,id',
             'taught_classes' => 'nullable|array',
             'taught_classes.*'=> 'exists:classrooms,id',
             'taught_subjects'=> 'nullable|array',
             'taught_subjects.*'=> 'exists:subjects,id',
+            'major_id'       => 'nullable|exists:majors,id',
         ]);
 
         try {
@@ -144,8 +181,9 @@ class TeacherController extends Controller
                 'phone'          => $validated['phone'],
                 'address'        => $validated['address'],
                 'specialization' => $validated['specialization'],
-                'position'       => $validated['position'] ?? 'Guru Mata Pelajaran',
-                'classroom_id'   => ($validated['position'] ?? 'Guru Mata Pelajaran') == 'Wali Kelas' ? ($validated['classroom_id'] ?? null) : null,
+                'position'       => $validated['position'] ?? ['Guru Mata Pelajaran'],
+                'classroom_id'   => in_array('Wali Kelas', $validated['position'] ?? []) ? ($validated['classroom_id'] ?? null) : null,
+                'major_id'       => (in_array('Kepala Program Keahlian (Kajur)', $validated['position'] ?? []) || in_array('Kepala Bengkel / Laboratorium', $validated['position'] ?? [])) ? ($validated['major_id'] ?? null) : null,
             ];
 
             if ($request->hasFile('photo')) {
@@ -157,7 +195,11 @@ class TeacherController extends Controller
 
             $teacher->update($teacherData);
 
-            if (in_array($validated['position'] ?? 'Guru Mata Pelajaran', ['Guru Mata Pelajaran', 'Wali Kelas'])) {
+            $nonTeaching = ['Kepala Sekolah', 'Wakasek Kurikulum', 'Wakasek Kesiswaan', 'Wakasek Hubin / Humas', 'Wakasek Sarana Prasarana', 'Staf Tata Usaha (TU)', 'Pustakawan', 'Kepala Bengkel / Laboratorium', 'Kepala Program Keahlian (Kajur)'];
+            $positions = $validated['position'] ?? ['Guru Mata Pelajaran'];
+            $hasTeachingPosition = count(array_diff($positions, $nonTeaching)) > 0;
+            
+            if ($hasTeachingPosition) {
                 $teacher->taughtClassrooms()->sync($validated['taught_classes'] ?? []);
                 $teacher->taughtSubjects()->sync($validated['taught_subjects'] ?? []);
             } else {

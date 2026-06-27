@@ -23,15 +23,29 @@
                     @error('code')<span class="form-error">{{ $message }}</span>@enderror
                 </div>
             </div>
-            <div class="form-group">
-                <label class="form-label" for="level">Jenjang / Tingkat <span class="required">*</span></label>
-                <select id="level" name="level" class="form-control form-select @error('level') is-invalid @enderror" required>
-                    <option value="">-- Pilih Jenjang --</option>
-                    <option value="X" {{ old('level') == 'X' ? 'selected' : '' }}>Kelas X</option>
-                    <option value="XI" {{ old('level') == 'XI' ? 'selected' : '' }}>Kelas XI</option>
-                    <option value="XII" {{ old('level') == 'XII' ? 'selected' : '' }}>Kelas XII</option>
-                </select>
-                @error('level')<span class="form-error">{{ $message }}</span>@enderror
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="level">Jenjang / Tingkat <span class="required">*</span></label>
+                    <select id="level" name="level" class="form-control form-select @error('level') is-invalid @enderror" required>
+                        <option value="">-- Pilih Jenjang --</option>
+                        <option value="X" {{ old('level') == 'X' ? 'selected' : '' }}>Kelas X</option>
+                        <option value="XI" {{ old('level') == 'XI' ? 'selected' : '' }}>Kelas XI</option>
+                        <option value="XII" {{ old('level') == 'XII' ? 'selected' : '' }}>Kelas XII</option>
+                    </select>
+                    @error('level')<span class="form-error">{{ $message }}</span>@enderror
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="major_id">Jurusan <span class="text-muted">(Opsional)</span></label>
+                    <select id="major_id" name="major_id" class="form-control form-select @error('major_id') is-invalid @enderror">
+                        <option value="">-- Umum / Semua Jurusan --</option>
+                        @foreach($majors as $major)
+                            <option value="{{ $major->id }}" {{ old('major_id') == $major->id ? 'selected' : '' }}>
+                                {{ $major->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('major_id')<span class="form-error">{{ $message }}</span>@enderror
+                </div>
             </div>
             <div class="form-group mb-0">
                 <label class="form-label" for="description">Deskripsi (Opsional)</label>

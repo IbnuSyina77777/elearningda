@@ -24,9 +24,20 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('students/export', [\App\Http\Controllers\Admin\StudentController::class, 'export'])->name('students.export');
     Route::post('students/import', [\App\Http\Controllers\Admin\StudentController::class, 'import'])->name('students.import');
     Route::resource('students', \App\Http\Controllers\Admin\StudentController::class);
+    Route::get('alumni', [\App\Http\Controllers\Admin\AlumniController::class, 'index'])->name('alumni.index');
     Route::resource('teachers', \App\Http\Controllers\Admin\TeacherController::class);
+    Route::resource('materials', \App\Http\Controllers\Admin\MaterialController::class)->except(['show']);
+    Route::resource('assignments', \App\Http\Controllers\Admin\AssignmentController::class)->except(['show']);
+    
+    Route::get('schedules/export', [\App\Http\Controllers\Admin\ScheduleController::class, 'export'])->name('schedules.export');
+    Route::get('schedules/import', [\App\Http\Controllers\Admin\ScheduleController::class, 'showImportForm'])->name('schedules.import.form');
+    Route::post('schedules/import', [\App\Http\Controllers\Admin\ScheduleController::class, 'import'])->name('schedules.import.process');
+    Route::get('schedules/template', [\App\Http\Controllers\Admin\ScheduleController::class, 'template'])->name('schedules.template');
+    Route::resource('schedules', \App\Http\Controllers\Admin\ScheduleController::class)->except(['show']);
     
     // Data Master
+    Route::get('classrooms/{classroom}/promotion', [\App\Http\Controllers\Admin\ClassroomController::class, 'promotion'])->name('classrooms.promotion');
+    Route::post('classrooms/{classroom}/promote', [\App\Http\Controllers\Admin\ClassroomController::class, 'promote'])->name('classrooms.promote');
     Route::resource('classrooms', \App\Http\Controllers\Admin\ClassroomController::class);
     Route::resource('academic-years', \App\Http\Controllers\Admin\AcademicYearController::class);
     
@@ -91,13 +102,12 @@ Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')
     Route::post('/subjects/{subject}/grades', [\App\Http\Controllers\Teacher\GradeController::class, 'storeGrades'])->name('grades.store');
     Route::get('/subjects/{subject}/grades/export', [\App\Http\Controllers\Teacher\GradeController::class, 'export'])->name('grades.export');
     
-    // Exams (PTS & PAS)
-    Route::get('/subjects/{subject}/exams', [\App\Http\Controllers\Teacher\ExamController::class, 'index'])->name('exams.index');
-    Route::post('/subjects/{subject}/exams', [\App\Http\Controllers\Teacher\ExamController::class, 'store'])->name('exams.store');
-    
-    // Attendances
-    Route::get('/subjects/{subject}/attendances', [\App\Http\Controllers\Teacher\AttendanceController::class, 'index'])->name('attendances.index');
-    Route::post('/subjects/{subject}/attendances', [\App\Http\Controllers\Teacher\AttendanceController::class, 'store'])->name('attendances.store');
+    // Akademik
+    Route::resource('exams', \App\Http\Controllers\Teacher\ExamController::class);
+    Route::resource('grades', \App\Http\Controllers\Teacher\GradeController::class);
+    Route::resource('attendances', \App\Http\Controllers\Teacher\AttendanceController::class)->only(['index', 'create', 'store', 'show']);
+    Route::get('schedules', [\App\Http\Controllers\Teacher\ScheduleController::class, 'index'])->name('schedules.index');
+
     // Administrasi Guru
     Route::resource('administrations', \App\Http\Controllers\Teacher\AdministrationController::class)->only(['index', 'store', 'destroy']);
 });
@@ -120,6 +130,7 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
     Route::get('/assignments/{assignment}', [\App\Http\Controllers\Student\AssignmentController::class, 'show'])->name('assignments.show');
     Route::post('/assignments/{assignment}/submit', [\App\Http\Controllers\Student\AssignmentController::class, 'submit'])->name('assignments.submit');
     Route::get('/transcript', [\App\Http\Controllers\Student\TranscriptController::class, 'index'])->name('transcript.index');
+    Route::get('/schedules', [\App\Http\Controllers\Student\ScheduleController::class, 'index'])->name('schedules.index');
     
     // Profile
     Route::get('/profile', [\App\Http\Controllers\Student\ProfileController::class, 'index'])->name('profile');

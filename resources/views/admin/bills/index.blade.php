@@ -60,8 +60,18 @@
                     @endforeach
                 </select>
             </div>
+            <div style="min-width: 200px;">
+                <select name="payment_category_id" class="form-control form-select" onchange="this.form.submit()">
+                    <option value="">Semua Kategori</option>
+                    @foreach($categories as $cat)
+                        <option value="{{ $cat->id }}" {{ request('payment_category_id') == $cat->id ? 'selected' : '' }}>
+                            {{ $cat->name }} {{ $cat->semester ? '(Smt '.$cat->semester.')' : '' }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
             
-            @if(request('status') || request('classroom_id') || request('search'))
+            @if(request('status') || request('classroom_id') || request('payment_category_id') || request('search'))
                 <a href="{{ route('admin.bills.index') }}" class="btn btn-outline">Reset</a>
             @endif
         </form>
@@ -86,10 +96,19 @@
                         <tr>
                             <td>
                                 <strong>{{ $bill->student->name ?? '-' }}</strong>
-                                <div class="text-sm text-muted">{{ $bill->student->classroom->name ?? '-' }}</div>
+                                <div class="text-sm text-muted">
+                                    @if($bill->student && $bill->student->status === 'alumni')
+                                        <span class="text-success">Lulus (Alumni)</span>
+                                    @else
+                                        {{ $bill->student->classroom->name ?? '-' }}
+                                    @endif
+                                </div>
                             </td>
                             <td>
                                 <strong>{{ $bill->paymentCategory->name ?? '-' }}</strong>
+                                @if($bill->paymentCategory && $bill->paymentCategory->semester)
+                                    <span class="badge badge-info" style="font-size:0.7rem; margin-left:4px;">Semester {{ $bill->paymentCategory->semester }}</span>
+                                @endif
                                 <div class="text-sm text-muted">{{ $bill->academicYear->name ?? '-' }}</div>
                             </td>
                             <td style="font-weight:600;">Rp {{ number_format($bill->amount, 0, ',', '.') }}</td>

@@ -25,6 +25,9 @@ class Student extends Model
         'birth_date',
         'parent_name',
         'parent_phone',
+        'status',
+        'graduated_from',
+        'graduation_year',
     ];
 
     protected function casts(): array

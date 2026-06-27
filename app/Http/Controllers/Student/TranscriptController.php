@@ -20,14 +20,25 @@ class TranscriptController extends Controller
             return redirect('/')->with('error', 'Profil siswa tidak ditemukan.');
         }
 
-        $classroomId = $student->classroom_id;
-        
         $academicYears = AcademicYear::orderBy('start_date', 'desc')->get();
         $activeYear = AcademicYear::where('is_active', true)->first();
         $selectedYearId = $request->query('academic_year_id', $activeYear->id ?? ($academicYears->first()->id ?? null));
         $selectedYear = $academicYears->firstWhere('id', $selectedYearId);
 
-        $subjects = Subject::where('level', $student->classroom->level)->get();
+        // Determine Historical Classroom (to support Alumni and Promoted Students viewing past grades)
+        $historicalClassroomId = ExamScore::where('student_id', $student->id)
+            ->where('academic_year_id', $selectedYearId)
+            ->value('classroom_id');
+
+        $classroomId = $historicalClassroomId ?: $student->classroom_id;
+        $classroom = \App\Models\Classroom::find($classroomId);
+
+        if (!$classroom) {
+            $subjects = collect();
+        } else {
+            $subjects = Subject::where('level', $classroom->level)->get();
+        }
+
         $transcripts = collect();
 
         foreach ($subjects as $subject) {

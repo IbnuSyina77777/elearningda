@@ -41,11 +41,15 @@ class BillController extends Controller
                 });
             });
         }
+        if ($request->filled('payment_category_id')) {
+            $query->where('payment_category_id', $request->payment_category_id);
+        }
 
         $bills = $query->latest()->paginate(20)->withQueryString();
         $classrooms = Classroom::with('major')->get();
+        $categories = PaymentCategory::orderBy('name')->get();
 
-        return view('admin.bills.index', compact('bills', 'classrooms'));
+        return view('admin.bills.index', compact('bills', 'classrooms', 'categories'));
     }
 
     public function create()
@@ -66,6 +70,7 @@ class BillController extends Controller
             'due_date'            => 'required|date',
             'target_type'         => 'required|in:classroom,student',
             'classroom_id'        => 'required_if:target_type,classroom',
+            'student_id'          => 'required_if:target_type,student|exists:users,id',
         ]);
 
         try {
@@ -73,8 +78,21 @@ class BillController extends Controller
 
             $studentIds = [];
 
+            $category = PaymentCategory::find($validated['payment_category_id']);
+            $targetLevel = $category ? $category->target_level : null;
+
             if ($request->target_type === 'classroom') {
-                $studentIds = Student::where('classroom_id', $request->classroom_id)->pluck('id')->toArray();
+                if ($request->classroom_id === 'all') {
+                    $studentIds = Student::whereHas('classroom', function($q) use ($targetLevel) {
+                        if ($targetLevel) $q->where('level', $targetLevel);
+                    })->pluck('id')->toArray();
+                } else {
+                    $selectedClass = \App\Models\Classroom::find($request->classroom_id);
+                    if ($targetLevel && $selectedClass && $selectedClass->level !== $targetLevel) {
+                        return back()->with('error', "Kelas {$selectedClass->name} tidak sesuai dengan peruntukan Kategori {$category->name} Semester {$category->semester} (hanya untuk Kelas {$targetLevel}).")->withInput();
+                    }
+                    $studentIds = Student::where('classroom_id', $request->classroom_id)->pluck('id')->toArray();
+                }
                 
                 if (empty($studentIds)) {
                     return back()->with('error', 'Kelas yang dipilih tidak memiliki siswa.')->withInput();
@@ -88,7 +106,8 @@ class BillController extends Controller
             $now = now();
             
             // Cek siswa mana saja yang sudah punya tagihan ini agar tidak duplikat (menghindari error SQL 1062)
-            $existingStudentIds = Bill::whereIn('student_id', $studentIds)
+            $existingStudentIds = Bill::withTrashed()
+                ->whereIn('student_id', $studentIds)
                 ->where('payment_category_id', $validated['payment_category_id'])
                 ->where('academic_year_id', $validated['academic_year_id'])
                 ->pluck('student_id')
@@ -114,7 +133,9 @@ class BillController extends Controller
                 ];
             }
 
-            Bill::insert($billsData);
+            foreach (array_chunk($billsData, 500) as $chunk) {
+                Bill::insertOrIgnore($chunk);
+            }
 
             DB::commit();
             
@@ -140,12 +161,14 @@ class BillController extends Controller
             return back()->with('error', 'Tidak ada Tahun Ajaran yang aktif. Silakan set salah satu tahun ajaran menjadi aktif terlebih dahulu.');
         }
 
-        $categories = PaymentCategory::where('is_active', true)->get();
+        $categories = PaymentCategory::where('is_active', true)
+                        ->where('academic_year_id', $activeYear->id)
+                        ->get();
         if ($categories->isEmpty()) {
             return back()->with('error', 'Belum ada kategori pembayaran yang aktif.');
         }
 
-        $students = Student::all();
+        $students = Student::with('classroom')->get();
         if ($students->isEmpty()) {
             return back()->with('error', 'Belum ada data siswa di dalam sistem.');
         }
@@ -167,6 +190,11 @@ class BillController extends Controller
                     ->toArray();
 
                 foreach ($categories as $category) {
+                    $targetLevel = $category->target_level;
+                    if ($targetLevel && $student->classroom && $student->classroom->level !== $targetLevel) {
+                        continue; // Skip because the category is not for this student's grade level
+                    }
+
                     // Jika siswa belum punya tagihan untuk kategori ini, buatkan
                     if (!in_array($category->id, $existingCategoryIds)) {
                         $billsData[] = [
@@ -181,6 +209,17 @@ class BillController extends Controller
                             'updated_at'          => $now,
                         ];
                         $count++;
+                    } else {
+                        // Jika sudah ada tapi di tong sampah, restore
+                        $trashedBill = Bill::onlyTrashed()
+                            ->where('student_id', $student->id)
+                            ->where('payment_category_id', $category->id)
+                            ->where('academic_year_id', $activeYear->id)
+                            ->first();
+                        if ($trashedBill) {
+                            $trashedBill->restore();
+                            $count++;
+                        }
                     }
                 }
             }
@@ -188,7 +227,7 @@ class BillController extends Controller
             if (!empty($billsData)) {
                 // Insert dalam bongkahan (chunks) agar memori aman jika data sangat banyak
                 foreach (array_chunk($billsData, 500) as $chunk) {
-                    Bill::insert($chunk);
+                    Bill::insertOrIgnore($chunk);
                 }
             }
 

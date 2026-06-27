@@ -21,7 +21,13 @@ class Teacher extends Model
         'specialization',
         'position',
         'classroom_id',
+        'major_id',
     ];
+
+    public function major(): BelongsTo
+    {
+        return $this->belongsTo(Major::class);
+    }
 
     public function homeroomClass(): BelongsTo
     {
@@ -37,6 +43,10 @@ class Teacher extends Model
     {
         return $this->belongsToMany(Subject::class, 'subject_teacher', 'teacher_id', 'subject_id')->withTimestamps();
     }
+
+    protected $casts = [
+        'position' => 'array',
+    ];
 
     public function user(): BelongsTo
     {

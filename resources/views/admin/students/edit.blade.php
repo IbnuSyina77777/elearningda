@@ -64,9 +64,9 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label" for="classroom_id">Kelas <span class="required">*</span></label>
-                    <select id="classroom_id" name="classroom_id" class="form-control form-select @error('classroom_id') is-invalid @enderror" required>
-                        <option value="">-- Pilih Kelas --</option>
+                    <label class="form-label" for="classroom_id">Kelas</label>
+                    <select id="classroom_id" name="classroom_id" class="form-control form-select @error('classroom_id') is-invalid @enderror">
+                        <option value="">-- Lulus (Alumni) / Tidak Ada --</option>
                         @foreach($classrooms as $room)
                             <option value="{{ $room->id }}" {{ old('classroom_id', $student->classroom_id) == $room->id ? 'selected' : '' }}>
                                 {{ $room->name }} — {{ $room->major->code }}
