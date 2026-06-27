@@ -76,10 +76,7 @@
                         <span class="sidebar-link-icon"><i class="ri-book-open-line"></i></span>
                         Mata Pelajaran
                     </a>
-                    <a href="{{ route('admin.assignments.index') }}" class="sidebar-link {{ request()->routeIs('admin.assignments.*') ? 'active' : '' }}">
-                        <span class="sidebar-link-icon"><i class="ri-task-line"></i></span>
-                        Tugas
-                    </a>
+
                     <a href="{{ route('admin.schedules.index') }}" class="sidebar-link {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}">
                         <span class="sidebar-link-icon"><i class="ri-calendar-todo-line"></i></span>
                         Jadwal Pelajaran
@@ -140,10 +137,7 @@
                         <span class="sidebar-link-icon"><i class="ri-folder-chart-line"></i></span>
                         Administrasi Mengajar
                     </a>
-                    <a href="{{ route('teacher.grades.index') }}" class="sidebar-link {{ request()->routeIs('teacher.grades.*') ? 'active' : '' }}">
-                        <span class="sidebar-link-icon"><i class="ri-bar-chart-box-line"></i></span>
-                        Input Nilai Akhir
-                    </a>
+
                     <a href="{{ route('teacher.schedules.index') }}" class="sidebar-link {{ request()->routeIs('teacher.schedules.*') ? 'active' : '' }}">
                         <span class="sidebar-link-icon"><i class="ri-calendar-todo-line"></i></span>
                         Jadwal Mengajar

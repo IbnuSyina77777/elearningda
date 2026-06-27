@@ -26,8 +26,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('students', \App\Http\Controllers\Admin\StudentController::class);
     Route::get('alumni', [\App\Http\Controllers\Admin\AlumniController::class, 'index'])->name('alumni.index');
     Route::resource('teachers', \App\Http\Controllers\Admin\TeacherController::class);
-    Route::resource('materials', \App\Http\Controllers\Admin\MaterialController::class)->except(['show']);
-    Route::resource('assignments', \App\Http\Controllers\Admin\AssignmentController::class)->except(['show']);
+
     
     Route::get('schedules/export', [\App\Http\Controllers\Admin\ScheduleController::class, 'export'])->name('schedules.export');
     Route::get('schedules/import', [\App\Http\Controllers\Admin\ScheduleController::class, 'showImportForm'])->name('schedules.import.form');
@@ -103,9 +102,12 @@ Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')
     Route::get('/subjects/{subject}/grades/export', [\App\Http\Controllers\Teacher\GradeController::class, 'export'])->name('grades.export');
     
     // Akademik
-    Route::resource('exams', \App\Http\Controllers\Teacher\ExamController::class);
-    Route::resource('grades', \App\Http\Controllers\Teacher\GradeController::class);
-    Route::resource('attendances', \App\Http\Controllers\Teacher\AttendanceController::class)->only(['index', 'create', 'store', 'show']);
+    Route::get('/subjects/{subject}/exams', [\App\Http\Controllers\Teacher\ExamController::class, 'index'])->name('exams.index');
+    Route::post('/subjects/{subject}/exams', [\App\Http\Controllers\Teacher\ExamController::class, 'store'])->name('exams.store');
+    
+    // Attendances
+    Route::get('/subjects/{subject}/attendances', [\App\Http\Controllers\Teacher\AttendanceController::class, 'index'])->name('attendances.index');
+    Route::post('/subjects/{subject}/attendances', [\App\Http\Controllers\Teacher\AttendanceController::class, 'store'])->name('attendances.store');
     Route::get('schedules', [\App\Http\Controllers\Teacher\ScheduleController::class, 'index'])->name('schedules.index');
 
     // Administrasi Guru

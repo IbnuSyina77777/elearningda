@@ -20,8 +20,13 @@
             <div class="stat-card">
                 <div class="stat-card-icon blue"><i class="ri-group-line"></i></div>
                 <div class="stat-card-info">
-                    <div class="stat-card-label">Total Siswa</div>
+                    <div class="stat-card-label">Total Siswa (Keseluruhan)</div>
                     <div class="stat-card-value">{{ number_format($totalStudents, 0, ',', '.') }}</div>
+                    <div style="font-size: 0.75rem; margin-top: 4px; color: var(--text-secondary); display: flex; gap: 8px;">
+                        @foreach(['X', 'XI', 'XII'] as $lvl)
+                            <span>Kls {{ $lvl }}: <strong>{{ $studentsPerLevel[$lvl] ?? 0 }}</strong></span>
+                        @endforeach
+                    </div>
                 </div>
             </div>
             
@@ -30,6 +35,11 @@
                 <div class="stat-card-info">
                     <div class="stat-card-label">Total Tagihan</div>
                     <div class="stat-card-value">Rp {{ number_format($totalBillsAmount / 1000000, 1, ',', '.') }}jt</div>
+                    <div style="font-size: 0.75rem; margin-top: 4px; color: var(--text-secondary); display: flex; gap: 8px;">
+                        @foreach(['X', 'XI', 'XII'] as $lvl)
+                            <span>Kls {{ $lvl }}: <strong>{{ isset($billsPerLevel[$lvl]) ? number_format($billsPerLevel[$lvl]->total_amount / 1000000, 1, ',', '.') . 'jt' : '0' }}</strong></span>
+                        @endforeach
+                    </div>
                 </div>
             </div>
 
@@ -38,8 +48,13 @@
                 <div class="stat-card-info">
                     <div class="stat-card-label">Dana Masuk</div>
                     <div class="stat-card-value">Rp {{ number_format($totalPaidAmount / 1000000, 1, ',', '.') }}jt</div>
+                    <div style="font-size: 0.75rem; margin-top: 4px; color: var(--text-secondary); display: flex; gap: 8px; flex-wrap: wrap;">
+                        @foreach(['X', 'XI', 'XII'] as $lvl)
+                            <span>Kls {{ $lvl }}: <strong>{{ isset($billsPerLevel[$lvl]) ? number_format($billsPerLevel[$lvl]->total_paid / 1000000, 1, ',', '.') . 'jt' : '0' }}</strong></span>
+                        @endforeach
+                    </div>
                     @if($totalBillsAmount > 0)
-                        <div class="stat-card-change up">
+                        <div class="stat-card-change up" style="margin-top: 4px;">
                             <i class="ri-arrow-up-line"></i> {{ round(($totalPaidAmount / $totalBillsAmount) * 100, 1) }}% collected
                         </div>
                     @endif
@@ -51,6 +66,25 @@
                 <div class="stat-card-info">
                     <div class="stat-card-label">Jatuh Tempo</div>
                     <div class="stat-card-value">{{ $overdueCount }}</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;"><i class="ri-graduation-cap-line"></i></div>
+                <div class="stat-card-info">
+                    <div class="stat-card-label">Total Alumni</div>
+                    <div class="stat-card-value">{{ number_format($totalAlumni, 0, ',', '.') }}</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-icon" style="background: rgba(249, 115, 22, 0.1); color: #f97316;"><i class="ri-money-dollar-circle-line"></i></div>
+                <div class="stat-card-info">
+                    <div class="stat-card-label">Tagihan Alumni</div>
+                    <div class="stat-card-value">Rp {{ number_format($totalAlumniBillsAmount / 1000000, 1, ',', '.') }}jt</div>
+                    <div style="font-size: 0.75rem; margin-top: 4px; color: var(--text-secondary);">
+                        Dana Masuk: <strong>Rp {{ number_format($totalAlumniPaidAmount / 1000000, 1, ',', '.') }}jt</strong>
+                    </div>
                 </div>
             </div>
         </div>
