@@ -93,8 +93,8 @@
                     <div class="feature-card-icon" style="background: var(--success-100); color: var(--success-600);">
                         <i class="ri-secure-payment-line"></i>
                     </div>
-                    <h3>Pembayaran SPP Online</h3>
-                    <p>Orang tua dapat mengecek tagihan dan membayar SPP langsung lewat Virtual Account & E-Wallet.</p>
+                    <h3>Pembayaran Online</h3>
+                    <p>Orang tua dapat mengecek tagihan dan membayar secara online langsung lewat Virtual Account & E-Wallet.</p>
                 </div>
 
                 <div class="feature-card">
