@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Diagram E-Learning</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+        }
+        .mermaid-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 1200px;
+            overflow-x: auto;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mermaid-container">
+        <h2>Class Diagram: Sistem E-Learning & Pembayaran</h2>
+        <p style="text-align:center; color:#666; font-size:14px; margin-bottom:20px;">
+            (Klik kanan pada gambar lalu pilih <strong>"Save image as..."</strong> untuk menyimpannya sebagai JPG/PNG)
+        </p>
+        <div class="mermaid">
+classDiagram
+    class User {
+        +BigInt id
+        +String name
+        +String email
+        +String role
+        +String password
+        +login()
+        +logout()
+    }
+    class Student {
+        +BigInt id
+        +String nisn
+        +String nis
+        +String status
+        +String phone
+        +getTotalUnpaid()
+    }
+    class Teacher {
+        +BigInt id
+        +String nip
+        +String position
+        +String phone
+    }
+    class AcademicYear {
+        +BigInt id
+        +String name
+        +Boolean is_active
+    }
+    class Major {
+        +BigInt id
+        +String name
+        +String code
+    }
+    class Classroom {
+        +BigInt id
+        +String name
+        +String level
+        +promote()
+    }
+    class Bill {
+        +BigInt id
+        +Decimal amount
+        +Decimal total_paid
+        +String status
+        +Date due_date
+        +recalculateStatus()
+        +getRemainingAmountAttribute()
+    }
+    class PaymentCategory {
+        +BigInt id
+        +String name
+        +String code
+        +Decimal default_amount
+        +getTargetLevelAttribute()
+    }
+    class Transaction {
+        +BigInt id
+        +String order_id
+        +Decimal amount
+        +String status
+        +String payment_type
+    }
+    class Subject {
+        +BigInt id
+        +String name
+        +String code
+    }
+    class Assignment {
+        +BigInt id
+        +String title
+        +DateTime due_date
+    }
+    class Material {
+        +BigInt id
+        +String title
+        +String file_path
+    }
+    class Submission {
+        +BigInt id
+        +String file_path
+        +Decimal score
+        +grade(score)
+    }
+
+    %% Relasi Inheritance / Composition / Aggregation
+    User "1" -- "0..1" Student : hasProfile
+    User "1" -- "0..1" Teacher : hasProfile
+    
+    Major "1" *-- "*" Classroom : contains
+    Major "1" *-- "*" Subject : offers
+    Classroom "1" o-- "*" Student : enrolls
+    
+    AcademicYear "1" *-- "*" PaymentCategory : defines
+    PaymentCategory "1" *-- "*" Bill : actsAsTemplate
+    Student "1" *-- "*" Bill : mustPay
+    Bill "1" *-- "*" Transaction : recordedAs
+    
+    Teacher "1" o-- "*" Subject : teaches
+    Subject "1" *-- "*" Assignment : has
+    Subject "1" *-- "*" Material : has
+    Student "1" -- "*" Submission : submits
+    Assignment "1" *-- "*" Submission : collects
+        </div>
+    </div>
+
+    <!-- Script to render Mermaid -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

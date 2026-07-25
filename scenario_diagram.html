@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skenario / Narrative Diagram</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+        }
+        .mermaid-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 1200px;
+            overflow-x: auto;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mermaid-container">
+        <h2>Diagram Skenario (User Journey): Aktivitas Siswa</h2>
+        <p style="text-align:center; color:#666; font-size:14px; margin-bottom:20px;">
+            (Klik kanan pada gambar lalu pilih <strong>"Save image as..."</strong> untuk menyimpannya sebagai JPG/PNG)
+        </p>
+        <div class="mermaid">
+journey
+    title Narasi Penggunaan Aplikasi E-Learning (Perjalanan Siswa)
+    
+    section "1. Akses & Login"
+      "Buka Aplikasi Web": 5: Siswa
+      "Input NISN & Password": 4: Siswa, Sistem
+      "Melihat Ringkasan Dashboard": 5: Siswa, Sistem
+      
+    section "2. Kegiatan Belajar Mengajar"
+      "Mengecek Jadwal Pelajaran": 4: Siswa
+      "Membaca & Mengunduh Materi": 5: Siswa, Sistem
+      "Mengerjakan Kuis / Tugas": 3: Siswa
+      "Upload File Jawaban": 4: Siswa, Sistem
+      "Menerima Feedback & Nilai": 5: Siswa, Guru
+      
+    section "3. Kewajiban Pembayaran"
+      "Mendapat Notifikasi Tagihan": 2: Siswa, Sistem
+      "Melihat Rincian Biaya (SPP/Buku)": 4: Siswa
+      "Klik Tombol Bayar (Midtrans)": 5: Siswa
+      "Scan QRIS / Transfer VA": 4: Siswa
+      "Tagihan Otomatis Lunas": 5: Siswa, Sistem
+        </div>
+    </div>
+
+    <!-- Script to render Mermaid -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

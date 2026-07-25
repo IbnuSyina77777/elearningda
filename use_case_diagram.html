@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use Case Diagram E-Learning</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+        }
+        .mermaid-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 1200px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mermaid-container">
+        <h2 style="text-align: center; color: #333;">Use Case Diagram: Sistem E-Learning & Pembayaran</h2>
+        <div class="mermaid">
+flowchart LR
+    %% Pengaturan Style Actor dan Use Case
+    classDef actor fill:#f9f9f9,stroke:#333,stroke-width:2px,shape:circle;
+    classDef usecase fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,shape:capsule,color:#000;
+    classDef system fill:#ffffff,stroke:#666,stroke-width:2px,stroke-dasharray: 5 5;
+
+    %% Aktor
+    Admin((Admin)):::actor
+    Guru((Guru)):::actor
+    Siswa((Siswa)):::actor
+
+    %% Sistem Boundary
+    subgraph Sistem[Aplikasi E-Learning & Pembayaran]
+        direction TB
+        
+        %% Use Case Admin
+        UC_Master([Kelola Data Master <br/>Siswa, Guru, Kelas]):::usecase
+        UC_Jadwal([Kelola Jadwal Pelajaran]):::usecase
+        UC_Keuangan([Kelola Kategori & Tagihan <br/>Pembayaran]):::usecase
+        UC_Laporan([Pantau Laporan Nilai & Keuangan]):::usecase
+        
+        %% Use Case Guru
+        UC_Materi([Kelola Materi Pelajaran]):::usecase
+        UC_Tugas([Kelola Tugas & Ujian]):::usecase
+        UC_Nilai([Periksa & Berikan Nilai]):::usecase
+        UC_Absen([Kelola Absensi]):::usecase
+        
+        %% Use Case Siswa
+        UC_Belajar([Akses Materi & Download]):::usecase
+        UC_Submit([Kerjakan & Submit Tugas]):::usecase
+        UC_Transkrip([Lihat Transkrip Nilai]):::usecase
+        UC_Bayar([Bayar Tagihan <br/>via Payment Gateway]):::usecase
+    end
+
+    %% Relasi Admin
+    Admin --> UC_Master
+    Admin --> UC_Jadwal
+    Admin --> UC_Keuangan
+    Admin --> UC_Laporan
+
+    %% Relasi Guru
+    Guru --> UC_Materi
+    Guru --> UC_Tugas
+    Guru --> UC_Nilai
+    Guru --> UC_Absen
+
+    %% Relasi Siswa
+    Siswa --> UC_Belajar
+    Siswa --> UC_Submit
+    Siswa --> UC_Transkrip
+    Siswa --> UC_Bayar
+
+    %% Keterkaitan Aktor dengan Sistem Payment (Sebagai Aktor Eksternal)
+    Midtrans((Midtrans<br/>Payment Gateway)):::actor
+    UC_Bayar <--> |Verifikasi Pembayaran & Webhook| Midtrans
+        </div>
+    </div>
+
+    <!-- Script to render Mermaid -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

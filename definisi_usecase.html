@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Definisi Aktor dan Use Case</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 30px;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+        }
+        h2 {
+            text-align: center;
+            color: #1a365d;
+            border-bottom: 3px solid #3182ce;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        h3 {
+            color: #2b6cb0;
+            margin-top: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 15px;
+        }
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 14px 18px;
+            text-align: left;
+        }
+        th {
+            background-color: #ebf8ff;
+            color: #2c5282;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f7fafc;
+        }
+        tr:hover {
+            background-color: #edf2f7;
+        }
+        .icon {
+            font-size: 24px;
+        }
+        .note {
+            text-align: center;
+            font-size: 13px;
+            color: #718096;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>📑 Definisi Aktor dan Use Case</h2>
+
+        <h3><span class="icon">👥</span> Definisi Aktor (Actors)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th width="5%">No</th>
+                    <th width="20%">Nama Aktor</th>
+                    <th width="75%">Deskripsi / Peran dalam Sistem</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td><strong>Admin</strong></td>
+                    <td>Pengguna pengelola sistem yang memiliki hak akses penuh (*Super User*). Bertugas mengelola Data Master (Siswa, Guru, Kelas), mengatur Jadwal Pelajaran, dan mengkonfigurasi Manajemen Keuangan/Kategori Pembayaran.</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td><strong>Guru</strong></td>
+                    <td>Tenaga pendidik yang menggunakan sistem untuk melaksanakan Kegiatan Belajar Mengajar (KBM). Berwenang untuk membuat materi, memberikan tugas, mengatur absensi, dan memasukkan nilai akhir ke dalam sistem.</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td><strong>Siswa</strong></td>
+                    <td>Pengguna akhir yang menjadi subjek KBM. Bertugas untuk melihat jadwal pelajaran, mengunduh materi, mengerjakan dan mengunggah (*submit*) tugas, melihat transkrip nilai, serta wajib mengecek dan membayar tagihan sekolah.</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td><strong>Midtrans (Sistem)</strong></td>
+                    <td>Aktor sistem eksternal (*Payment Gateway*) yang memfasilitasi transaksi secara otomatis, memverifikasi status pembayaran dari bank/E-Wallet, dan mengirimkan notifikasi lunas (*Webhook*) ke aplikasi E-Learning.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3><span class="icon">⚙️</span> Definisi Use Case</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th width="5%">No</th>
+                    <th width="25%">Nama Use Case</th>
+                    <th width="70%">Deskripsi Proses / Fungsionalitas</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td><strong>Kelola Data Master</strong></td>
+                    <td>Proses CRUD (Create, Read, Update, Delete) yang dilakukan Admin untuk entitas fundamental aplikasi, seperti Tahun Ajaran, Jurusan, Kelas, serta Akun Siswa & Guru.</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td><strong>Kelola Keuangan & Tagihan</strong></td>
+                    <td>Proses pembuatan Kategori Pembayaran oleh Admin (baik secara massal untuk satu Kelas atau spesifik secara Perorangan) yang memicu sistem untuk men-generate tagihan (Bill) ke masing-masing Siswa terkait.</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td><strong>Kelola Materi & Tugas</strong></td>
+                    <td>Proses manajemen pembelajaran di mana Guru mengunggah berkas modul (Materi) dan menyusun instrumen evaluasi (Tugas/Ujian) beserta batasan waktu (*Due Date*).</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td><strong>Akses KBM</strong></td>
+                    <td>Aktivitas sentral bagi Siswa untuk melihat informasi kelas, membaca materi, dan mengunggah (*upload*) berkas jawaban dari tugas yang diberikan Guru.</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td><strong>Berikan Penilaian</strong></td>
+                    <td>Aktivitas evaluasi di mana Guru meninjau hasil unggahan jawaban (*Submission*) Siswa dan memberikan skor nilai beserta *feedback* yang akan disimpan di *Database*.</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td><strong>Membayar Tagihan (Payment)</strong></td>
+                    <td>Alur (*Checkout*) yang memungkinkan Siswa melunasi tunggakan biaya pendidikan dengan memilih metode pembayaran yang disediakan Midtrans (Virtual Account, QRIS, dsb).</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td><strong>Sinkronisasi Status (Webhook)</strong></td>
+                    <td>Proses di balik layar di mana aplikasi menerima HTTP POST dari Midtrans untuk mengonfirmasi bahwa dana sudah masuk, kemudian mengubah status tagihan menjadi 'Lunas' (*Paid*).</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="note">
+            Catatan: Buka file ini lalu gunakan fitur "Print / Save as PDF" pada browser Anda untuk menjadikannya gambar / dokumen formal jika diperlukan untuk dokumentasi perancangan sistem.
+        </div>
+    </div>
+
+</body>
+</html>

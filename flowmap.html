@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flowmap E-Learning</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+        }
+        .mermaid-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 1000px;
+            overflow-x: auto;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mermaid-container">
+        <h2>Flowmap (System Flowchart): E-Learning & Pembayaran</h2>
+        <p style="text-align:center; color:#666; font-size:14px; margin-bottom:20px;">
+            (Klik kanan pada gambar lalu pilih <strong>"Save image as..."</strong> untuk menyimpannya sebagai JPG/PNG)
+        </p>
+        <div class="mermaid">
+flowchart TD
+    %% Styling
+    classDef startEnd fill:#d4edda,stroke:#28a745,stroke-width:2px,shape:circle;
+    classDef process fill:#cce5ff,stroke:#007bff,stroke-width:2px;
+    classDef doc fill:#fff3cd,stroke:#ffc107,stroke-width:2px,shape:note;
+    classDef db fill:#f8d7da,stroke:#dc3545,stroke-width:2px,shape:cylinder;
+    
+    subgraph Admin [Admin]
+        direction TB
+        A1((Mulai)):::startEnd
+        A2[Input Data Master & <br/>Kategori Pembayaran]:::process
+        A3[Sistem Generate Tagihan]:::process
+        A4[(Database Sistem)]:::db
+        A5[Cetak Rekap Laporan]:::process
+        A6[/Laporan Keuangan & Nilai/]:::doc
+        
+        A1 --> A2
+        A2 --> A4
+        A2 --> A3
+        A3 --> A4
+        A4 --> A5
+        A5 --> A6
+    end
+
+    subgraph Guru [Guru]
+        direction TB
+        G1[Login Guru]:::process
+        G2[Input Materi & Tugas]:::process
+        G3[Input Nilai Siswa]:::process
+        
+        G1 --> G2
+        G2 --> A4
+        G3 --> A4
+    end
+
+    subgraph Siswa [Siswa]
+        direction TB
+        S1[Login Siswa]:::process
+        S2[Akses Materi & Submit Tugas]:::process
+        S3[Lihat Tagihan]:::process
+        S4[Pilih Metode Bayar Midtrans]:::process
+        S5[/Struk Pembayaran/]:::doc
+        
+        S1 --> S2
+        S2 --> G3
+        
+        A3 --> S3
+        S3 --> S4
+    end
+
+    subgraph Midtrans [Midtrans Gateway]
+        direction TB
+        M1[Proses Pembayaran]:::process
+        M2[Kirim Webhook Notifikasi]:::process
+        
+        S4 --> M1
+        M1 --> M2
+        M2 --> A4
+        M1 --> S5
+    end
+        </div>
+    </div>
+
+    <!-- Script to render Mermaid -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

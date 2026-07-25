@@ -98,8 +98,18 @@ class BillController extends Controller
                     return back()->with('error', 'Kelas yang dipilih tidak memiliki siswa.')->withInput();
                 }
             } else {
-                // Future expansion: single student selection
-                return back()->with('error', 'Target individu belum diimplementasikan di antarmuka ini. Gunakan target kelas.');
+                // Perorangan: single student or multiple students
+                $selectedStudentIds = $request->input('student_ids', []);
+                if (is_array($selectedStudentIds) && !empty($selectedStudentIds)) {
+                    $studentIds = $selectedStudentIds;
+                } else {
+                    // Fallback: single student from student_id field
+                    $student = Student::whereHas('user', fn($q) => $q->where('id', $validated['student_id']))->first();
+                    if (!$student) {
+                        return back()->with('error', 'Siswa tidak ditemukan.')->withInput();
+                    }
+                    $studentIds = [$student->id];
+                }
             }
 
             $billsData = [];

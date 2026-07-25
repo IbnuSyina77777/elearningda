@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sequence Diagram E-Learning</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f6f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+        .mermaid-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 900px;
+            overflow-x: auto;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Skenario 1: Pembayaran -->
+    <div class="mermaid-container">
+        <h2>Sequence Diagram 1: Proses Generate Tagihan & Pembayaran (Midtrans)</h2>
+        <div class="mermaid">
+sequenceDiagram
+    autonumber
+    actor Admin
+    actor Siswa
+    participant Sistem as Sistem E-Learning
+    participant Midtrans as Payment Gateway (Midtrans)
+
+    Admin->>Sistem: Buat Kategori Pembayaran (Target: Kelas/Perorangan)
+    activate Sistem
+    Sistem-->>Admin: Sukses (Generate Tagihan Otomatis: Status 'Unpaid')
+    deactivate Sistem
+    
+    Siswa->>Sistem: Mengakses Menu Tagihan
+    activate Sistem
+    Sistem-->>Siswa: Menampilkan Daftar Tagihan (Unpaid)
+    deactivate Sistem
+    
+    Siswa->>Sistem: Klik tombol "Bayar" pada salah satu tagihan
+    activate Sistem
+    Sistem->>Midtrans: Request Snap Token (API Parameter Data Tagihan)
+    activate Midtrans
+    Midtrans-->>Sistem: Mengembalikan Snap Token
+    deactivate Midtrans
+    Sistem-->>Siswa: Membuka Popup Pembayaran (Snap UI)
+    deactivate Sistem
+    
+    Siswa->>Midtrans: Memilih Metode Bayar & Melakukan Pembayaran
+    activate Midtrans
+    Midtrans-->>Siswa: Menampilkan Layar Pembayaran Berhasil
+    deactivate Midtrans
+    
+    Note over Sistem, Midtrans: Asynchronous Webhook Process (Terjadi di Background)
+    
+    Midtrans->>Sistem: POST HTTP Webhook (Status = 'Settlement')
+    activate Sistem
+    Sistem->>Sistem: Validasi Signature Key & ID Transaksi
+    Sistem->>Sistem: Update Status Tagihan menjadi 'Paid'
+    Sistem-->>Midtrans: Respon 200 OK
+    deactivate Sistem
+        </div>
+    </div>
+
+    <!-- Skenario 2: KBM -->
+    <div class="mermaid-container">
+        <h2>Sequence Diagram 2: Proses Belajar Mengajar (KBM) & Penilaian</h2>
+        <div class="mermaid">
+sequenceDiagram
+    autonumber
+    actor Guru
+    participant Sistem as Sistem E-Learning
+    actor Siswa
+
+    Guru->>Sistem: Upload Materi & Buat Tugas
+    activate Sistem
+    Sistem-->>Guru: Notifikasi Pembuatan Sukses
+    deactivate Sistem
+    
+    Siswa->>Sistem: Buka Halaman Pelajaran/Tugas
+    activate Sistem
+    Sistem-->>Siswa: Tampilkan Materi & Rincian Tugas
+    deactivate Sistem
+    
+    Siswa->>Sistem: Upload File / Submit Jawaban Tugas
+    activate Sistem
+    Sistem-->>Siswa: Notifikasi Sukses (Status: Submitted)
+    deactivate Sistem
+    
+    Guru->>Sistem: Buka Daftar Pengumpulan Tugas Siswa
+    activate Sistem
+    Sistem-->>Guru: Tampilkan Daftar Jawaban Siswa
+    deactivate Sistem
+    
+    Guru->>Sistem: Input Nilai & Feedback untuk Jawaban Siswa
+    activate Sistem
+    Sistem-->>Guru: Simpan Nilai ke Database
+    deactivate Sistem
+    
+    Siswa->>Sistem: Cek Halaman Transkrip / Nilai
+    activate Sistem
+    Sistem-->>Siswa: Tampilkan Hasil Nilai Akhir
+    deactivate Sistem
+        </div>
+    </div>
+
+    <!-- Script to render Mermaid -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

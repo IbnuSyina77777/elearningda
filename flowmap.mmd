@@ -1,0 +1,56 @@
+flowchart TD
+    %% Styling
+    classDef startEnd fill:#d4edda,stroke:#28a745,stroke-width:2px,shape:circle;
+    classDef process fill:#cce5ff,stroke:#007bff,stroke-width:2px;
+    classDef doc fill:#fff3cd,stroke:#ffc107,stroke-width:2px,shape:note;
+    classDef db fill:#f8d7da,stroke:#dc3545,stroke-width:2px,shape:cylinder;
+    
+    subgraph Admin
+        A1((Mulai)):::startEnd
+        A2[Input Data Master & Kategori Pembayaran]:::process
+        A3[Sistem Generate Tagihan]:::process
+        A4[(DB Sistem)]:::db
+        A5[Cetak Laporan]:::process
+        A6[/Laporan Keuangan & Nilai/]:::doc
+    end
+
+    subgraph Guru
+        G1[Login Guru]:::process
+        G2[Input Materi & Tugas]:::process
+        G3[Input Nilai Siswa]:::process
+    end
+
+    subgraph Siswa
+        S1[Login Siswa]:::process
+        S2[Akses Materi & Submit Tugas]:::process
+        S3[Lihat Tagihan]:::process
+        S4[Pilih Metode Bayar Midtrans]:::process
+        S5[/Struk Pembayaran/]:::doc
+    end
+
+    subgraph Midtrans
+        M1[Proses Pembayaran]:::process
+        M2[Kirim Webhook Notifikasi]:::process
+    end
+
+    A1 --> A2
+    A2 --> A4
+    A2 --> A3
+    A3 --> A4
+
+    G1 --> G2
+    G2 --> A4
+    G3 --> A4
+
+    S1 --> S2
+    S2 --> G3
+    
+    A3 --> S3
+    S3 --> S4
+    S4 --> M1
+    M1 --> M2
+    M2 --> A4
+    M1 --> S5
+    
+    A4 --> A5
+    A5 --> A6

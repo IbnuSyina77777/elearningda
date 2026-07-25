@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kebutuhan Perancangan (Hardware & Software)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+        }
+        .mermaid-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 1200px;
+            overflow-x: auto;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mermaid-container">
+        <h2>Diagram Kebutuhan Perancangan: Perangkat Keras & Lunak</h2>
+        <p style="text-align:center; color:#666; font-size:14px; margin-bottom:20px;">
+            (Klik kanan pada gambar lalu pilih <strong>"Save image as..."</strong> untuk menyimpannya sebagai JPG/PNG)
+        </p>
+        <div class="mermaid">
+flowchart TD
+    classDef main fill:#343a40,stroke:#23272b,stroke-width:2px,color:#fff
+    classDef hw fill:#007bff,stroke:#0056b3,stroke-width:2px,color:#fff
+    classDef sw fill:#28a745,stroke:#1e7e34,stroke-width:2px,color:#fff
+    classDef hwItem fill:#cce5ff,stroke:#0056b3,stroke-width:1px,color:#000
+    classDef swItem fill:#d4edda,stroke:#1e7e34,stroke-width:1px,color:#000
+
+    App{{"Aplikasi E-Learning Dan Pembayaran"}}:::main
+
+    subgraph Perangkat_Keras ["Kebutuhan Perangkat Keras (Hardware)"]
+        Server["Server / Hosting"]:::hw
+        ServerRAM["RAM: Minimal 2GB (Rekomendasi 4GB)"]:::hwItem
+        ServerCPU["CPU: Minimal 2 vCore"]:::hwItem
+        ServerStorage["Storage: Minimal SSD 20GB"]:::hwItem
+        
+        Client["Perangkat Pengguna"]:::hw
+        ClientLaptop["PC / Laptop / Smartphone"]:::hwItem
+        ClientNetwork["Koneksi Internet Stabil"]:::hwItem
+        
+        Server --> ServerRAM
+        Server --> ServerCPU
+        Server --> ServerStorage
+        
+        Client --> ClientLaptop
+        Client --> ClientNetwork
+    end
+
+    subgraph Perangkat_Lunak ["Kebutuhan Perangkat Lunak (Software)"]
+        BE["Kebutuhan Server"]:::sw
+        OS["OS: Linux Ubuntu 20.04 Atau Debian"]:::swItem
+        WebServ["Web Server: Nginx Atau Apache"]:::swItem
+        PHP["PHP Version 8.2"]:::swItem
+        DB["Database: MySQL 8 Atau MariaDB"]:::swItem
+        Composer["Package Manager: Composer Dan NPM"]:::swItem
+        
+        FE["Kebutuhan Aplikasi"]:::sw
+        Frame["Framework Backend: Laravel 11"]:::swItem
+        Browser["Web Browser: Google Chrome Atau Safari"]:::swItem
+        API["Layanan: Midtrans Payment API"]:::swItem
+        
+        BE --> OS
+        BE --> WebServ
+        BE --> PHP
+        BE --> DB
+        BE --> Composer
+        
+        FE --> Frame
+        FE --> Browser
+        FE --> API
+    end
+
+    App --> Server
+    App --> Client
+    App --> BE
+    App --> FE
+        </div>
+    </div>
+
+    <!-- Script to render Mermaid -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

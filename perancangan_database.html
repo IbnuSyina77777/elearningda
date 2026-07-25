@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perancangan Database (Tabel & Pengkodean)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 30px;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+        }
+        h2 {
+            text-align: center;
+            color: #1a365d;
+            border-bottom: 3px solid #3182ce;
+            padding-bottom: 15px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+        h3 {
+            color: #2b6cb0;
+            margin-top: 40px;
+            background-color: #ebf8ff;
+            padding: 10px 15px;
+            border-left: 5px solid #3182ce;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 12px 15px;
+            text-align: left;
+        }
+        th {
+            background-color: #f7fafc;
+            color: #2d3748;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #edf2f7;
+        }
+        .pk { color: #c53030; font-weight: bold; }
+        .fk { color: #dd6b20; font-weight: bold; }
+        .type { color: #319795; font-family: monospace; font-size: 13px; }
+        
+        .note {
+            text-align: center;
+            font-size: 13px;
+            color: #718096;
+            margin-top: 50px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>🗄️ Perancangan Database & Kamus Data</h2>
+        <div class="subtitle">Desain Tabel dan Pengkodean untuk Entitas Utama Aplikasi E-Learning</div>
+
+        <!-- Tabel Users -->
+        <h3>Tabel: <code>users</code> (Data Pengguna)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th width="20%">Nama Field</th>
+                    <th width="20%">Tipe Data</th>
+                    <th width="15%">Key</th>
+                    <th width="45%">Keterangan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td class="type">BIGINT(20)</td><td class="pk">Primary Key</td><td>ID unik pengguna (Auto Increment)</td></tr>
+                <tr><td>name</td><td class="type">VARCHAR(255)</td><td>-</td><td>Nama lengkap pengguna</td></tr>
+                <tr><td>email</td><td class="type">VARCHAR(255)</td><td>Unique</td><td>Alamat email untuk login</td></tr>
+                <tr><td>password</td><td class="type">VARCHAR(255)</td><td>-</td><td>Password pengguna (Ter-enkripsi)</td></tr>
+                <tr><td>role</td><td class="type">ENUM</td><td>-</td><td>Peran pengguna: 'admin', 'teacher', 'student'</td></tr>
+                <tr><td>created_at</td><td class="type">TIMESTAMP</td><td>-</td><td>Waktu data dibuat</td></tr>
+            </tbody>
+        </table>
+
+        <!-- Tabel Students -->
+        <h3>Tabel: <code>students</code> (Data Siswa)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th width="20%">Nama Field</th>
+                    <th width="20%">Tipe Data</th>
+                    <th width="15%">Key</th>
+                    <th width="45%">Keterangan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td class="type">BIGINT(20)</td><td class="pk">Primary Key</td><td>ID unik siswa (Auto Increment)</td></tr>
+                <tr><td>user_id</td><td class="type">BIGINT(20)</td><td class="fk">Foreign Key</td><td>Relasi ke tabel <code>users</code></td></tr>
+                <tr><td>classroom_id</td><td class="type">BIGINT(20)</td><td class="fk">Foreign Key</td><td>Relasi ke tabel <code>classrooms</code> (Kelas Siswa)</td></tr>
+                <tr><td>nisn</td><td class="type">VARCHAR(20)</td><td>Unique</td><td>Nomor Induk Siswa Nasional</td></tr>
+                <tr><td>nis</td><td class="type">VARCHAR(20)</td><td>Unique</td><td>Nomor Induk Siswa (Lokal)</td></tr>
+                <tr><td>phone</td><td class="type">VARCHAR(20)</td><td>-</td><td>Nomor telepon / WhatsApp siswa</td></tr>
+                <tr><td>status</td><td class="type">VARCHAR(50)</td><td>-</td><td>Status akademik ('aktif', 'lulus', dll)</td></tr>
+            </tbody>
+        </table>
+
+        <!-- Tabel Payment Categories -->
+        <h3>Tabel: <code>payment_categories</code> (Kategori Pembayaran)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th width="20%">Nama Field</th>
+                    <th width="20%">Tipe Data</th>
+                    <th width="15%">Key</th>
+                    <th width="45%">Keterangan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td class="type">BIGINT(20)</td><td class="pk">Primary Key</td><td>ID Kategori (Auto Increment)</td></tr>
+                <tr><td>academic_year_id</td><td class="type">BIGINT(20)</td><td class="fk">Foreign Key</td><td>Tahun ajaran pemberlakuan kategori</td></tr>
+                <tr><td>name</td><td class="type">VARCHAR(255)</td><td>-</td><td>Nama Kategori (misal: "SPP Bulan Juli")</td></tr>
+                <tr><td>code</td><td class="type">VARCHAR(50)</td><td>-</td><td>Kode pembayaran sistem</td></tr>
+                <tr><td>default_amount</td><td class="type">DECIMAL(12,2)</td><td>-</td><td>Nominal default tagihan</td></tr>
+            </tbody>
+        </table>
+
+        <!-- Tabel Bills -->
+        <h3>Tabel: <code>bills</code> (Tagihan Siswa)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th width="20%">Nama Field</th>
+                    <th width="20%">Tipe Data</th>
+                    <th width="15%">Key</th>
+                    <th width="45%">Keterangan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td class="type">BIGINT(20)</td><td class="pk">Primary Key</td><td>ID Tagihan (Auto Increment)</td></tr>
+                <tr><td>student_id</td><td class="type">BIGINT(20)</td><td class="fk">Foreign Key</td><td>Target tagihan perorangan (Relasi ke <code>students</code>)</td></tr>
+                <tr><td>payment_category_id</td><td class="type">BIGINT(20)</td><td class="fk">Foreign Key</td><td>Relasi ke tabel <code>payment_categories</code></td></tr>
+                <tr><td>amount</td><td class="type">DECIMAL(12,2)</td><td>-</td><td>Jumlah uang yang harus dibayar</td></tr>
+                <tr><td>total_paid</td><td class="type">DECIMAL(12,2)</td><td>-</td><td>Total uang yang sudah dibayar (Akumulasi)</td></tr>
+                <tr><td>status</td><td class="type">ENUM</td><td>-</td><td>Status ('unpaid', 'partial', 'paid')</td></tr>
+                <tr><td>due_date</td><td class="type">DATE</td><td>-</td><td>Tenggat waktu pembayaran</td></tr>
+            </tbody>
+        </table>
+
+        <!-- Tabel Transactions -->
+        <h3>Tabel: <code>transactions</code> (Riwayat Transaksi)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th width="20%">Nama Field</th>
+                    <th width="20%">Tipe Data</th>
+                    <th width="15%">Key</th>
+                    <th width="45%">Keterangan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td class="type">BIGINT(20)</td><td class="pk">Primary Key</td><td>ID Transaksi (Auto Increment)</td></tr>
+                <tr><td>bill_id</td><td class="type">BIGINT(20)</td><td class="fk">Foreign Key</td><td>Tagihan yang dibayarkan</td></tr>
+                <tr><td>order_id</td><td class="type">VARCHAR(100)</td><td>Unique</td><td>Kode ID Transaksi dari Midtrans (Pengkodean referensi)</td></tr>
+                <tr><td>amount</td><td class="type">DECIMAL(12,2)</td><td>-</td><td>Nominal transaksi yang diproses</td></tr>
+                <tr><td>payment_type</td><td class="type">VARCHAR(50)</td><td>-</td><td>Jenis pembayaran (bank_transfer, qris, dll)</td></tr>
+                <tr><td>status</td><td class="type">VARCHAR(50)</td><td>-</td><td>Status transaksi ('pending', 'success', 'failed', 'expire')</td></tr>
+            </tbody>
+        </table>
+
+        <div class="note">
+            Catatan: Gunakan fitur "Print (Ctrl+P)" lalu pilih "Save as PDF" di browser Anda untuk menyimpan rancangan Kamus Data (Data Dictionary) ini.
+        </div>
+    </div>
+
+</body>
+</html>

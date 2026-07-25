@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERD E-Learning</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+        }
+        .mermaid-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 1200px;
+            overflow-x: auto;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mermaid-container">
+        <h2>Entity Relationship Diagram (ERD): Sistem E-Learning & Pembayaran</h2>
+        <div class="mermaid">
+erDiagram
+    %% Core & Users
+    USERS {
+        bigint id PK
+        string name
+        string email
+        string password
+        string role "admin, teacher, student"
+    }
+
+    STUDENTS {
+        bigint id PK
+        bigint user_id FK
+        bigint classroom_id FK
+        string nisn
+        string nis
+        string phone
+        string address
+        string status
+    }
+
+    TEACHERS {
+        bigint id PK
+        bigint user_id FK
+        string nip
+        string phone
+        string address
+    }
+
+    %% Master Data Akademik
+    ACADEMIC_YEARS {
+        bigint id PK
+        string name "contoh: 2026/2027"
+        boolean is_active
+    }
+
+    MAJORS {
+        bigint id PK
+        string name
+        string code
+    }
+
+    CLASSROOMS {
+        bigint id PK
+        bigint major_id FK
+        string name
+        string level "X, XI, XII"
+    }
+
+    SUBJECTS {
+        bigint id PK
+        bigint major_id FK
+        string name
+        string code
+    }
+
+    SCHEDULES {
+        bigint id PK
+        bigint classroom_id FK
+        bigint subject_id FK
+        bigint teacher_id FK
+        string day
+        time start_time
+        time end_time
+    }
+
+    %% KBM (Kegiatan Belajar Mengajar)
+    MATERIALS {
+        bigint id PK
+        bigint subject_id FK
+        bigint teacher_id FK
+        string title
+        text content
+        string file_path
+    }
+
+    ASSIGNMENTS {
+        bigint id PK
+        bigint subject_id FK
+        bigint teacher_id FK
+        string title
+        datetime due_date
+    }
+
+    SUBMISSIONS {
+        bigint id PK
+        bigint assignment_id FK
+        bigint student_id FK
+        string file_path
+        decimal score
+    }
+
+    ATTENDANCES {
+        bigint id PK
+        bigint student_id FK
+        bigint schedule_id FK
+        date date
+        string status "present, absent, sick"
+    }
+
+    EXAM_SCORES {
+        bigint id PK
+        bigint student_id FK
+        bigint subject_id FK
+        bigint academic_year_id FK
+        decimal score
+    }
+
+    %% Keuangan (Pembayaran)
+    PAYMENT_CATEGORIES {
+        bigint id PK
+        bigint academic_year_id FK
+        string name
+        string code
+        int semester
+        decimal default_amount
+    }
+
+    BILLS {
+        bigint id PK
+        bigint student_id FK
+        bigint payment_category_id FK
+        bigint academic_year_id FK
+        decimal amount
+        decimal total_paid
+        string status "unpaid, partial, paid"
+        date due_date
+    }
+
+    TRANSACTIONS {
+        bigint id PK
+        bigint bill_id FK
+        string order_id "Midtrans ID"
+        decimal amount
+        string payment_type
+        string status "pending, success, failed"
+    }
+
+
+    %% Relasi User
+    USERS ||--o| STUDENTS : "memiliki profil"
+    USERS ||--o| TEACHERS : "memiliki profil"
+
+    %% Relasi Master Akademik
+    MAJORS ||--o{ CLASSROOMS : "memiliki"
+    MAJORS ||--o{ SUBJECTS : "menaungi"
+    CLASSROOMS ||--o{ STUDENTS : "berisi"
+    
+    CLASSROOMS ||--o{ SCHEDULES : "memiliki"
+    SUBJECTS ||--o{ SCHEDULES : "dijadwalkan"
+    TEACHERS ||--o{ SCHEDULES : "mengajar"
+
+    %% Relasi KBM
+    SUBJECTS ||--o{ MATERIALS : "memiliki"
+    TEACHERS ||--o{ MATERIALS : "membuat"
+    
+    SUBJECTS ||--o{ ASSIGNMENTS : "memiliki"
+    TEACHERS ||--o{ ASSIGNMENTS : "membuat"
+    
+    ASSIGNMENTS ||--o{ SUBMISSIONS : "dikumpulkan melalui"
+    STUDENTS ||--o{ SUBMISSIONS : "mengumpulkan"
+    
+    STUDENTS ||--o{ ATTENDANCES : "melakukan"
+    SCHEDULES ||--o{ ATTENDANCES : "tercatat di"
+    
+    STUDENTS ||--o{ EXAM_SCORES : "mendapatkan"
+    SUBJECTS ||--o{ EXAM_SCORES : "pada"
+    ACADEMIC_YEARS ||--o{ EXAM_SCORES : "pada"
+
+    %% Relasi Keuangan
+    ACADEMIC_YEARS ||--o{ PAYMENT_CATEGORIES : "berlaku di"
+    PAYMENT_CATEGORIES ||--o{ BILLS : "menjadi dasar"
+    ACADEMIC_YEARS ||--o{ BILLS : "berlaku di"
+    STUDENTS ||--o{ BILLS : "ditagihkan ke"
+    BILLS ||--o{ TRANSACTIONS : "dibayar melalui"
+        </div>
+    </div>
+
+    <!-- Script to render Mermaid -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

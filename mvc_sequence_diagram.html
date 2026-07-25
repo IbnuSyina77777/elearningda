@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MVC Sequence Diagram</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+        }
+        .mermaid-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 1000px;
+            overflow-x: auto;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mermaid-container">
+        <h2>Sequence Diagram: Alur Model-View-Controller (MVC) di Laravel</h2>
+        <p style="text-align:center; color:#666; font-size:14px; margin-bottom:20px;">
+            (Klik kanan pada gambar lalu pilih <strong>"Save image as..."</strong> untuk menyimpannya sebagai JPG/PNG)
+        </p>
+        <div class="mermaid">
+sequenceDiagram
+    autonumber
+    actor Browser as Pengguna (Browser)
+    participant Route as Routes (web.php)
+    participant Controller as Controller
+    participant Model as Model (Eloquent)
+    participant Database as Database (MySQL)
+    participant View as View (Blade Template)
+
+    Browser->>Route: Kirim HTTP Request (contoh: GET /bills)
+    Route->>Controller: Teruskan ke Controller (Route to Action)
+    activate Controller
+    
+    Controller->>Model: Request Data (contoh: Bill::with('student')->get())
+    activate Model
+    Model->>Database: Eksekusi Query SQL
+    activate Database
+    Database-->>Model: Mengembalikan Data (Result Set)
+    deactivate Database
+    Model-->>Controller: Mengembalikan Data berupa Object/Collection
+    deactivate Model
+    
+    Controller->>View: Parsing Data ke View (compact('bills'))
+    activate View
+    View-->>Controller: Mengembalikan kode HTML yang sudah ter-render
+    deactivate View
+    
+    Controller-->>Browser: Kirim HTTP Response (Tampilkan Halaman di Browser)
+    deactivate Controller
+        </div>
+    </div>
+
+    <!-- Script to render Mermaid -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

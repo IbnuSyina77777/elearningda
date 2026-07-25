@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PaymentCategory;
+use App\Models\Student;
 use Illuminate\Http\Request;
 
 class PaymentCategoryController extends Controller
@@ -29,7 +30,11 @@ class PaymentCategoryController extends Controller
     {
         $classrooms = \App\Models\Classroom::with('major')->get();
         $academicYears = \App\Models\AcademicYear::all();
-        return view('admin.payment-categories.create', compact('classrooms', 'academicYears'));
+        $students = Student::with(['user', 'classroom.major'])
+            ->whereHas('user')
+            ->get()
+            ->sortBy(fn($s) => $s->user->name);
+        return view('admin.payment-categories.create', compact('classrooms', 'academicYears', 'students'));
     }
 
     public function store(Request $request)
@@ -40,7 +45,10 @@ class PaymentCategoryController extends Controller
             'semester'      => 'required|integer|min:1|max:6',
             'default_amount'=> 'required|numeric|min:0',
             'description'   => 'nullable|string',
+            'target_type'   => 'nullable|in:classroom,student',
             'classroom_id'  => 'nullable|string',
+            'student_ids'   => 'nullable|array',
+            'student_ids.*' => 'exists:students,id',
         ]);
 
         $codeMap = [
@@ -74,7 +82,11 @@ class PaymentCategoryController extends Controller
             $category = PaymentCategory::create($validated);
         }
 
-        if (!empty($validated['classroom_id'])) {
+        $targetType = $request->input('target_type');
+        $shouldGenerateBills = ($targetType === 'classroom' && !empty($validated['classroom_id'])) 
+                            || ($targetType === 'student' && !empty($validated['student_ids']));
+
+        if ($shouldGenerateBills) {
             $activeYear = \App\Models\AcademicYear::where('is_active', true)->first();
             
             if (!$activeYear) {
@@ -85,19 +97,24 @@ class PaymentCategoryController extends Controller
             $studentIds = [];
             $targetLevel = $category->target_level;
 
-            if ($validated['classroom_id'] === 'all') {
-                $studentIds = \App\Models\Student::whereHas('classroom', function($q) use ($targetLevel) {
-                    if ($targetLevel) $q->where('level', $targetLevel);
-                })->pluck('id')->toArray();
-            } else {
-                // Validate if specific class matches target level
-                $selectedClass = \App\Models\Classroom::find($validated['classroom_id']);
-                if ($targetLevel && $selectedClass && $selectedClass->level !== $targetLevel) {
-                    return redirect()->route('admin.payment-categories.index')
-                        ->with('warning', "Kategori berhasil ditambahkan, namun tagihan gagal dibuat karena kelas {$selectedClass->name} tidak sesuai dengan peruntukan Semester {$category->semester} (hanya untuk Kelas {$targetLevel}).");
+            if ($targetType === 'student') {
+                // Perorangan: ambil student_ids yang dipilih langsung
+                $studentIds = $validated['student_ids'];
+            } elseif ($targetType === 'classroom') {
+                if ($validated['classroom_id'] === 'all') {
+                    $studentIds = Student::whereHas('classroom', function($q) use ($targetLevel) {
+                        if ($targetLevel) $q->where('level', $targetLevel);
+                    })->pluck('id')->toArray();
+                } else {
+                    // Validate if specific class matches target level
+                    $selectedClass = \App\Models\Classroom::find($validated['classroom_id']);
+                    if ($targetLevel && $selectedClass && $selectedClass->level !== $targetLevel) {
+                        return redirect()->route('admin.payment-categories.index')
+                            ->with('warning', "Kategori berhasil ditambahkan, namun tagihan gagal dibuat karena kelas {$selectedClass->name} tidak sesuai dengan peruntukan Semester {$category->semester} (hanya untuk Kelas {$targetLevel}).");
+                    }
+                    
+                    $studentIds = Student::where('classroom_id', $validated['classroom_id'])->pluck('id')->toArray();
                 }
-                
-                $studentIds = \App\Models\Student::where('classroom_id', $validated['classroom_id'])->pluck('id')->toArray();
             }
 
             if (!empty($studentIds)) {
@@ -123,8 +140,9 @@ class PaymentCategoryController extends Controller
                     \App\Models\Bill::insertOrIgnore($chunk);
                 }
 
+                $label = $targetType === 'student' ? 'perorangan' : 'kelas';
                 return redirect()->route('admin.payment-categories.index')
-                    ->with('success', 'Kategori Pembayaran berhasil ditambahkan & '.count($studentIds).' tagihan telah digenerate otomatis.');
+                    ->with('success', 'Kategori Pembayaran berhasil ditambahkan & '.count($studentIds).' tagihan ('.$label.') telah digenerate otomatis.');
             }
         }
 

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BPMN To-Be E-Learning</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+        }
+        .mermaid-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 1200px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mermaid-container">
+        <h2 style="text-align: center; color: #333;">BPMN To-Be: Sistem E-Learning & Pembayaran</h2>
+        <div class="mermaid">
+flowchart TD
+    %% Styling
+    classDef startEnd fill:#d4edda,stroke:#28a745,stroke-width:2px,shape:circle;
+    classDef process fill:#cce5ff,stroke:#007bff,stroke-width:2px;
+    classDef system fill:#e2e3e5,stroke:#383d41,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef decision fill:#fff3cd,stroke:#ffc107,stroke-width:2px,shape:diamond;
+    
+    subgraph Admin [Admin]
+        direction TB
+        A_Start((Mulai)):::startEnd
+        A_Master[Kelola Data Master<br/>Siswa, Guru, Kelas]:::process
+        A_Kategori[Buat Kategori Pembayaran<br/>Target: Kelas / Perorangan]:::process
+        
+        A_Start --> A_Master
+        A_Master --> A_Kategori
+    end
+
+    subgraph Guru [Guru]
+        direction TB
+        G_Start((Mulai)):::startEnd
+        G_Materi[Buat Materi & Tugas]:::process
+        G_Nilai[Periksa Tugas & Beri Nilai]:::process
+        
+        G_Start --> G_Materi
+    end
+
+    subgraph Siswa [Siswa]
+        direction TB
+        S_Start((Mulai)):::startEnd
+        S_Belajar[Akses Materi & Kerjakan Tugas]:::process
+        S_Tagihan[Cek Notifikasi Tagihan]:::process
+        S_Metode{Pilih Metode Pembayaran?}:::decision
+        S_Bayar[Lakukan Pembayaran]:::process
+        S_Selesai((Selesai)):::startEnd
+        
+        S_Start --> S_Belajar
+        S_Belajar --> |Submit Tugas| G_Nilai
+    end
+
+    subgraph Sistem [Sistem E-Learning & Payment Gateway]
+        direction TB
+        Sys_Bill[Generate Tagihan Otomatis<br/>Sesuai Target]:::system
+        Sys_Rekap[Rekap Nilai Siswa]:::system
+        Sys_Midtrans[Gateway Midtrans<br/>Virtual Account / E-Wallet]:::system
+        Sys_Webhook[Terima Webhook Payment]:::system
+        Sys_Update[Update Status Tagihan<br/>Otomatis Lunas]:::system
+        
+        G_Nilai --> Sys_Rekap
+        Sys_Rekap --> S_Selesai
+        
+        A_Kategori --> Sys_Bill
+        Sys_Bill --> |Notifikasi| S_Tagihan
+        
+        S_Tagihan --> S_Metode
+        S_Metode --> |Pilih Bank/Qris| Sys_Midtrans
+        Sys_Midtrans --> S_Bayar
+        S_Bayar --> Sys_Webhook
+        Sys_Webhook --> Sys_Update
+        Sys_Update --> S_Selesai
+    end
+        </div>
+    </div>
+
+    <!-- Script to render Mermaid -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>
