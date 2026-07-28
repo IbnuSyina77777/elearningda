@@ -72,7 +72,14 @@ class AcademicYearController extends Controller
             return back()->with('error', 'Tidak dapat menghapus tahun ajaran yang sedang aktif.');
         }
 
-        $academicYear->delete();
-        return redirect()->route('admin.academic-years.index')->with('success', 'Tahun Ajaran berhasil dihapus.');
+        try {
+            $academicYear->delete();
+            return redirect()->route('admin.academic-years.index')->with('success', 'Tahun Ajaran berhasil dihapus.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == "23000") {
+                return back()->with('error', 'Tidak dapat menghapus tahun ajaran karena masih digunakan pada data lain (seperti tagihan, kelas, dll).');
+            }
+            return back()->with('error', 'Terjadi kesalahan saat menghapus data.');
+        }
     }
 }
