@@ -18,9 +18,10 @@ class SettingController extends Controller
 
     public function update(Request $request)
     {
-        $data = $request->except('_token', '_method', 'logo');
+        $imageFields = ['app_logo', 'landing_hero_image', 'landing_about_image', 'login_bg_image'];
+        $data = $request->except(array_merge(['_token', '_method'], $imageFields));
 
-        // Handle normal inputs
+        // Handle normal text inputs
         foreach ($data as $key => $value) {
             Setting::updateOrCreate(
                 ['key' => $key],
@@ -28,21 +29,23 @@ class SettingController extends Controller
             );
         }
 
-        // Handle logo upload
-        if ($request->hasFile('app_logo')) {
-            $file = $request->file('app_logo');
-            $path = $file->store('settings', 'public');
-            
-            // Delete old logo if exists
-            $oldLogo = Setting::where('key', 'app_logo')->first();
-            if ($oldLogo && $oldLogo->value) {
-                Storage::disk('public')->delete($oldLogo->value);
-            }
+        // Handle all image uploads
+        foreach ($imageFields as $field) {
+            if ($request->hasFile($field)) {
+                $file = $request->file($field);
+                $path = $file->store('settings', 'public');
 
-            Setting::updateOrCreate(
-                ['key' => 'app_logo'],
-                ['value' => $path, 'type' => 'image']
-            );
+                // Delete old image if exists
+                $oldSetting = Setting::where('key', $field)->first();
+                if ($oldSetting && $oldSetting->value) {
+                    Storage::disk('public')->delete($oldSetting->value);
+                }
+
+                Setting::updateOrCreate(
+                    ['key' => $field],
+                    ['value' => $path, 'type' => 'image']
+                );
+            }
         }
 
         // Clear cache

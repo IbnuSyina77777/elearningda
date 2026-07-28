@@ -1,0 +1,50 @@
+%%{init: {'flowchart': {'curve': 'linear'}, 'theme': 'base', 'themeVariables': { 'lineColor': '#1c4a6b', 'primaryColor': '#ffffff', 'edgeLabelBackground': '#ffffff'}}}%%
+flowchart LR
+    %% Pengaturan Style
+    classDef actorNode fill:none,stroke:none,color:#000,font-size:16px,font-family:Arial;
+    classDef uc fill:#d4e8f7,stroke:#1c4a6b,stroke-width:2px,color:#000,font-size:16px,font-family:Arial;
+
+    %% Aktor (Tanpa gambar SVG jika via CLI agar lebih aman, kita gunakan shape circle standar atau teks)
+    Admin((Admin)):::actorNode
+    Guru((Guru)):::actorNode
+    Siswa((Siswa)):::actorNode
+
+    %% Use Case Bersama
+    UC_Login([Login ke Sistem]):::uc
+
+    %% Use Cases Admin
+    UC_Users([Kelola Data Pengguna]):::uc
+    UC_Laporan([Lihat Laporan]):::uc
+
+    %% Use Cases Guru
+    UC_Materi([Buat Materi Pelajaran]):::uc
+    UC_Nilai([Kelola Tugas & Nilai]):::uc
+
+    %% Use Cases Siswa
+    UC_Akses([Ikuti Pelajaran]):::uc
+    UC_Ujian([Kerjakan Ujian]):::uc
+    UC_Submit([Kumpulkan Jawaban]):::uc
+    UC_Bayar([Proses Pembayaran]):::uc
+    UC_Invoice([Lihat Invoice]):::uc
+
+    %% Relasi Login (Semua Aktor)
+    Admin --- UC_Login
+    Guru --- UC_Login
+    Siswa --- UC_Login
+
+    %% Relasi Admin
+    Admin --- UC_Users
+    Admin --- UC_Laporan
+
+    %% Relasi Guru
+    Guru --- UC_Materi
+    Guru --- UC_Nilai
+
+    %% Relasi Siswa
+    Siswa --- UC_Akses
+    Siswa --- UC_Ujian
+    Siswa --- UC_Bayar
+
+    %% Relasi Include
+    UC_Ujian -. "include" .-> UC_Submit
+    UC_Bayar -. "include" .-> UC_Invoice

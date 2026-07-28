@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usecase Diagram E-Learning</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f6f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+        .mermaid-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 1100px;
+            overflow-x: auto;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mermaid-container">
+        <h2>Usecase Diagram Sistem E-Learning</h2>
+        <div class="mermaid">
+flowchart LR
+    %% Pengaturan style agar mirip draw.io
+    classDef actor fill:#f9f9f9,stroke:#333,stroke-width:2px,shape:circle;
+    classDef usecase fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,rx:20,ry:20;
+    classDef boundary fill:none,stroke:#666,stroke-width:2px,stroke-dasharray: 5 5;
+
+    %% Actors
+    Admin[["👤 Admin"]]:::actor
+    Guru[["👤 Guru"]]:::actor
+    Siswa[["👤 Siswa"]]:::actor
+
+    %% System Boundary
+    subgraph Sistem E-Learning
+        direction TB
+        
+        %% Admin Usecases
+        UC1(Kelola Data Master <br/>Siswa, Guru, Kelas, Mapel):::usecase
+        UC2(Kelola Keuangan <br/>Tagihan & Transaksi):::usecase
+        UC3(Kelola Pengaturan <br/>& Laporan):::usecase
+        
+        %% Guru Usecases
+        UC4(Kelola Materi & Ujian):::usecase
+        UC5(Kelola Tugas & Nilai):::usecase
+        UC6(Kelola Presensi <br/>Kehadiran):::usecase
+        
+        %% Siswa Usecases
+        UC7(Melihat Materi & <br/>Jadwal Pelajaran):::usecase
+        UC8(Mengumpulkan Tugas <br/>& Ujian):::usecase
+        UC9(Melihat Transkrip Nilai):::usecase
+        UC10(Melakukan Pembayaran <br/>Tagihan):::usecase
+    end
+
+    %% Apply boundary style
+    class Sistem E-Learning boundary;
+
+    %% Connections Admin
+    Admin --> UC1
+    Admin --> UC2
+    Admin --> UC3
+
+    %% Connections Guru
+    Guru --> UC4
+    Guru --> UC5
+    Guru --> UC6
+    Guru --> UC1
+
+    %% Connections Siswa
+    Siswa --> UC7
+    Siswa --> UC8
+    Siswa --> UC9
+    Siswa --> UC10
+    
+    %% Optional: Relationships between Use Cases
+    UC10 -.-> |include| SistemPembayaran(Gateway Midtrans):::usecase
+        </div>
+    </div>
+
+    <!-- Script to render Mermaid -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

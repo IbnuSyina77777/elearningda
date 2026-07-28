@@ -3,7 +3,7 @@
 @section('title', 'Masuk — E-Learning SMK')
 
 @section('content')
-<div class="guest-layout">
+<div class="guest-layout" @if(setting('login_bg_image')) style="background: linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.65) 100%), url('{{ asset('storage/' . setting('login_bg_image')) }}') center/cover no-repeat;" @endif>
     <div class="login-card">
         <div class="login-logo">
             @if(setting('app_logo'))

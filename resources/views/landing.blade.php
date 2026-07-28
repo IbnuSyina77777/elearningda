@@ -21,7 +21,7 @@
     </nav>
 
     {{-- Hero Section --}}
-    <section class="landing-hero">
+    <section class="landing-hero" @if(setting('landing_hero_image')) style="background: linear-gradient(135deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.65) 100%), url('{{ asset('storage/' . setting('landing_hero_image')) }}') center/cover no-repeat;" @endif>
         <div class="hero-content">
             <h1>
                 {!! nl2br(e(setting('landing_title', 'Selamat Datang di SMK Bisa Hebat'))) !!}
@@ -42,9 +42,22 @@
         <div class="container text-center">
             <h2>Tentang Sekolah Kami</h2>
             <div class="divider"></div>
+            @if(setting('landing_about_image'))
+            <div style="display: flex; align-items: center; gap: 40px; flex-wrap: wrap; text-align: left; max-width: 960px; margin: 0 auto;">
+                <div style="flex: 1; min-width: 280px;">
+                    <img src="{{ asset('storage/' . setting('landing_about_image')) }}" alt="Tentang Sekolah" style="width: 100%; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,.1); object-fit: cover; max-height: 320px;">
+                </div>
+                <div style="flex: 1; min-width: 280px;">
+                    <p class="about-text" style="margin: 0;">
+                        {{ setting('landing_about', 'Kami adalah institusi pendidikan kejuruan yang berkomitmen mencetak lulusan unggul dan berkarakter, didukung oleh fasilitas modern dan tenaga pengajar profesional.') }}
+                    </p>
+                </div>
+            </div>
+            @else
             <p class="about-text">
                 {{ setting('landing_about', 'Kami adalah institusi pendidikan kejuruan yang berkomitmen mencetak lulusan unggul dan berkarakter, didukung oleh fasilitas modern dan tenaga pengajar profesional.') }}
             </p>
+            @endif
         </div>
     </section>
 

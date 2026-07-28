@@ -1245,7 +1245,7 @@ h6 { font-size: .9rem; }
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 30%, #450a0a 100%);
+    background: linear-gradient(135deg, var(--primary-800) 0%, var(--primary-900) 30%, var(--primary-950) 100%);
     position: relative;
     overflow: hidden;
 }
@@ -1301,7 +1301,7 @@ h6 { font-size: .9rem; }
     margin: 0 auto 14px;
     font-size: 1.8rem;
     color: #fff;
-    box-shadow: 0 8px 24px rgba(220,38,38,.3);
+    box-shadow: 0 8px 24px rgba(0,0,0,.2);
 }
 
 .login-logo h2 {
@@ -1385,7 +1385,7 @@ h6 { font-size: .9rem; }
 
 .landing-hero {
     min-height: 100vh;
-    background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 40%, #450a0a 100%);
+    background: linear-gradient(135deg, var(--primary-800) 0%, var(--primary-900) 40%, var(--primary-950) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
