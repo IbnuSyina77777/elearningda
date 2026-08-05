@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Mengunduh Gambar BPMN...</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 50px; background: #f8fafc; }
+        .loading { font-size: 1.2rem; color: #1e293b; }
+        .success { font-size: 1.2rem; color: #10b981; display: none; }
+        #hiddenGraph { display: none; }
+    </style>
+</head>
+<body>
+    <div id="message" class="loading">⏳ Sedang merender dan mengunduh gambar PNG, mohon tunggu...</div>
+    <div id="successMessage" class="success">✅ Gambar <b>BPMN_TO_BE.png</b> berhasil diunduh! Silakan cek folder Download Anda.</div>
+    <div id="hiddenGraph"></div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: false });
+        
+        const graphDefinition = `%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ffffff', 'primaryBorderColor': '#dc2626', 'primaryTextColor': '#1e293b', 'lineColor': '#64748b', 'tertiaryColor': '#fee2e2'}}}%%
+flowchart TD
+    classDef startEvent fill:#fff,stroke:#10b981,stroke-width:2px,shape:circle;
+    classDef endEvent fill:#fff,stroke:#dc2626,stroke-width:4px,shape:circle;
+    classDef task fill:#f8fafc,stroke:#334155,stroke-width:1px,shape:rect,rx:5,ry:5;
+    classDef gateway fill:#fff,stroke:#f59e0b,stroke-width:2px,shape:diamond;
+    classDef systemTask fill:#f1f5f9,stroke:#3b82f6,stroke-width:2px,shape:rect,rx:5,ry:5,stroke-dasharray: 5 5;
+
+    subgraph POOL_SMK [Pool: EduPay & E-Learning System]
+        subgraph LANE_ADMIN [Lane: Admin / Keuangan]
+            Start_Admin(((Mulai))) ::: startEvent
+            Task_BuatTagihan[Generate Tagihan PTS/PAS] ::: task
+            Task_Rekap[Lihat Laporan Keuangan] ::: task
+            End_Admin(((Selesai))) ::: endEvent
+        end
+        subgraph LANE_GURU [Lane: Guru]
+            Start_Guru(((Mulai))) ::: startEvent
+            Task_Upload[Upload Materi & Tugas] ::: task
+            Task_Periksa[Periksa Tugas Siswa] ::: task
+            Task_InputNilai[Input & Publish Nilai] ::: task
+        end
+        subgraph LANE_SISWA [Lane: Siswa]
+            Task_LihatTugas[Akses & Kerjakan Tugas] ::: task
+            Task_KumpulTugas[Submit Tugas] ::: task
+            Task_LihatTagihan[Lihat Tagihan Aktif] ::: task
+            Gateway_Bayar{Ingin Bayar Sekarang?} ::: gateway
+            Task_PilihMetode[Pilih Metode Pembayaran] ::: task
+            Task_Bayar[Lakukan Pembayaran] ::: task
+        end
+        subgraph LANE_SISTEM [Lane: Sistem Utama Aplikasi]
+            Sys_NotifTugas[Kirim Notif Tugas Baru] ::: systemTask
+            Sys_SimpanTugas[Simpan Jawaban Siswa] ::: systemTask
+            Sys_UpdateTranskrip[Update Transkrip Nilai Siswa] ::: systemTask
+            Sys_KirimInvoice[Buat Invoice & Notifikasi] ::: systemTask
+            Sys_Verifikasi[Verifikasi Transaksi Gateway] ::: systemTask
+            Gateway_Valid{Valid?} ::: gateway
+            Sys_UpdateLunas[Update Status Jadi Lunas] ::: systemTask
+            Sys_Batal[Batalkan Transaksi] ::: systemTask
+        end
+
+        Start_Guru --> Task_Upload
+        Task_Upload --> Sys_NotifTugas
+        Sys_NotifTugas --> Task_LihatTugas
+        Task_LihatTugas --> Task_KumpulTugas
+        Task_KumpulTugas --> Sys_SimpanTugas
+        Sys_SimpanTugas --> Task_Periksa
+        Task_Periksa --> Task_InputNilai
+        Task_InputNilai --> Sys_UpdateTranskrip
+        
+        Start_Admin --> Task_BuatTagihan
+        Task_BuatTagihan --> Sys_KirimInvoice
+        Sys_KirimInvoice --> Task_LihatTagihan
+        Task_LihatTagihan --> Gateway_Bayar
+        Gateway_Bayar -- Ya --> Task_PilihMetode
+        Gateway_Bayar -- Tidak --> Task_LihatTagihan
+        Task_PilihMetode --> Task_Bayar
+        Task_Bayar --> Sys_Verifikasi
+        Sys_Verifikasi --> Gateway_Valid
+        Gateway_Valid -- Valid --> Sys_UpdateLunas
+        Gateway_Valid -- Tidak Valid --> Sys_Batal
+        Sys_Batal --> Task_LihatTagihan
+        Sys_UpdateLunas --> Task_Rekap
+        Task_Rekap --> End_Admin
+        Sys_UpdateTranskrip --> End_Admin
+    end`;
+
+        mermaid.render('graphDiv', graphDefinition).then((result) => {
+            const hiddenGraph = document.getElementById('hiddenGraph');
+            hiddenGraph.innerHTML = result.svg;
+            
+            // Adjust SVG attributes for rendering
+            const svgElement = hiddenGraph.querySelector('svg');
+            svgElement.setAttribute('width', svgElement.getAttribute('viewBox').split(' ')[2]);
+            svgElement.setAttribute('height', svgElement.getAttribute('viewBox').split(' ')[3]);
+            
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            const img = new Image();
+            
+            img.onload = function() {
+                // Set canvas size and draw
+                canvas.width = img.width * 2; // High resolution
+                canvas.height = img.height * 2;
+                ctx.scale(2, 2);
+                ctx.fillStyle = "white";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+                
+                // Trigger download
+                const a = document.createElement("a");
+                a.download = "BPMN_TO_BE.png";
+                a.href = canvas.toDataURL("image/png");
+                document.body.appendChild(a);
+                a.click();
+                
+                // Update UI
+                document.getElementById('message').style.display = 'none';
+                document.getElementById('successMessage').style.display = 'block';
+            };
+            
+            img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgData)));
+        }).catch(err => {
+            document.getElementById('message').innerHTML = "❌ Terjadi kesalahan saat merender gambar.";
+        });
+    </script>
+</body>
+</html>

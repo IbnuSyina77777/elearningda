@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BPMN TO BE: Sistem Pembayaran & E-Learning SMK</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #dc2626;
+            --primary-light: #fee2e2;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-bottom: 30px;
+        }
+        h2 {
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 10px;
+            margin-top: 0;
+            color: #0f172a;
+        }
+        /* Symbol Dictionary */
+        .symbol-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .symbol-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+        .symbol-icon {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            min-width: 40px;
+            text-align: center;
+        }
+        .symbol-desc h4 {
+            margin: 0 0 5px 0;
+            font-size: 1rem;
+        }
+        .symbol-desc p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        /* Diagram Container */
+        .diagram-container {
+            overflow-x: auto;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        /* Step by Step */
+        .process-list {
+            list-style: none;
+            padding: 0;
+            counter-reset: process-counter;
+        }
+        .process-list li {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 20px;
+        }
+        .process-list li::before {
+            counter-increment: process-counter;
+            content: counter(process-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>BPMN TO BE: EduPay & E-Learning SMK</h1>
+            <p>Pemodelan Proses Bisnis (Business Process Model and Notation 2.0) secara Terintegrasi</p>
+        </div>
+
+        <div class="card">
+            <h2>1. Penjelasan Simbol BPMN 2.0 yang Digunakan</h2>
+            <div class="symbol-grid">
+                <div class="symbol-item">
+                    <div class="symbol-icon">◯</div>
+                    <div class="symbol-desc">
+                        <h4>Start Event</h4>
+                        <p>Titik awal dimulainya suatu proses bisnis. (Digambarkan dengan lingkaran tipis).</p>
+                    </div>
+                </div>
+                <div class="symbol-item">
+                    <div class="symbol-icon">▢</div>
+                    <div class="symbol-desc">
+                        <h4>Task / Activity</h4>
+                        <p>Langkah atau aksi yang dilakukan oleh aktor (Siswa/Guru/Admin). (Digambarkan dengan persegi membulat).</p>
+                    </div>
+                </div>
+                <div class="symbol-item">
+                    <div class="symbol-icon">◇</div>
+                    <div class="symbol-desc">
+                        <h4>Gateway (Exclusive)</h4>
+                        <p>Titik keputusan (Decision). Hanya ada satu jalur yang dipilih berdasarkan kondisi (Ya/Tidak). (Digambarkan dengan belah ketupat).</p>
+                    </div>
+                </div>
+                <div class="symbol-item">
+                    <div class="symbol-icon">◉</div>
+                    <div class="symbol-desc">
+                        <h4>End Event</h4>
+                        <p>Titik akhir selesainya suatu proses bisnis. (Digambarkan dengan lingkaran tebal).</p>
+                    </div>
+                </div>
+                <div class="symbol-item">
+                    <div class="symbol-icon">🗂️</div>
+                    <div class="symbol-desc">
+                        <h4>Pools & Swimlanes</h4>
+                        <p>Mengelompokkan aktivitas berdasarkan aktor atau divisi yang bertanggung jawab (Siswa, Guru, Admin, Sistem).</p>
+                    </div>
+                </div>
+                <div class="symbol-item">
+                    <div class="symbol-icon">→</div>
+                    <div class="symbol-desc">
+                        <h4>Sequence Flow</h4>
+                        <p>Garis panah yang menunjukkan urutan aliran proses dari satu aktivitas ke aktivitas lainnya.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>2. Diagram BPMN (TO BE)</h2>
+            <p class="text-muted" style="margin-bottom: 20px;">Diagram di bawah digenerate menggunakan Mermaid.js yang merepresentasikan Pool dan Swimlane BPMN beserta simbol aktivitasnya.</p>
+            
+            <div class="diagram-container">
+                <div class="mermaid">
+                    %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ffffff', 'primaryBorderColor': '#dc2626', 'primaryTextColor': '#1e293b', 'lineColor': '#64748b', 'tertiaryColor': '#fee2e2'}}}%%
+                    flowchart TD
+                        %% Definisi Styling untuk simbol BPMN
+                        classDef startEvent fill:#fff,stroke:#10b981,stroke-width:2px,shape:circle;
+                        classDef endEvent fill:#fff,stroke:#dc2626,stroke-width:4px,shape:circle;
+                        classDef task fill:#f8fafc,stroke:#334155,stroke-width:1px,shape:rect,rx:5,ry:5;
+                        classDef gateway fill:#fff,stroke:#f59e0b,stroke-width:2px,shape:diamond;
+                        classDef systemTask fill:#f1f5f9,stroke:#3b82f6,stroke-width:2px,shape:rect,rx:5,ry:5,stroke-dasharray: 5 5;
+
+                        subgraph POOL_SMK [Pool: EduPay & E-Learning System]
+                            
+                            subgraph LANE_ADMIN [Lane: Admin / Keuangan]
+                                Start_Admin(((Mulai))) ::: startEvent
+                                Task_BuatTagihan[Generate Tagihan PTS/PAS] ::: task
+                                Task_Rekap[Lihat Laporan Keuangan] ::: task
+                                End_Admin(((Selesai))) ::: endEvent
+                            end
+
+                            subgraph LANE_GURU [Lane: Guru]
+                                Start_Guru(((Mulai))) ::: startEvent
+                                Task_Upload[Upload Materi & Tugas] ::: task
+                                Task_Periksa[Periksa Tugas Siswa] ::: task
+                                Task_InputNilai[Input & Publish Nilai] ::: task
+                            end
+
+                            subgraph LANE_SISWA [Lane: Siswa]
+                                Task_LihatTugas[Akses & Kerjakan Tugas] ::: task
+                                Task_KumpulTugas[Submit Tugas] ::: task
+                                
+                                Task_LihatTagihan[Lihat Tagihan Aktif] ::: task
+                                Gateway_Bayar{Ingin Bayar Sekarang?} ::: gateway
+                                Task_PilihMetode[Pilih Metode Pembayaran] ::: task
+                                Task_Bayar[Lakukan Pembayaran] ::: task
+                            end
+
+                            subgraph LANE_SISTEM [Lane: Sistem Utama (Aplikasi)]
+                                Sys_NotifTugas[Kirim Notif Tugas Baru] ::: systemTask
+                                Sys_SimpanTugas[Simpan Jawaban Siswa] ::: systemTask
+                                Sys_UpdateTranskrip[Update Transkrip Nilai Siswa] ::: systemTask
+                                
+                                Sys_KirimInvoice[Buat Invoice & Notifikasi] ::: systemTask
+                                Sys_Verifikasi[Verifikasi Transaksi Gateway] ::: systemTask
+                                Gateway_Valid{Valid?} ::: gateway
+                                Sys_UpdateLunas[Update Status Jadi Lunas] ::: systemTask
+                                Sys_Batal[Batalkan Transaksi] ::: systemTask
+                            end
+
+                            %% Alur E-Learning
+                            Start_Guru --> Task_Upload
+                            Task_Upload --> Sys_NotifTugas
+                            Sys_NotifTugas --> Task_LihatTugas
+                            Task_LihatTugas --> Task_KumpulTugas
+                            Task_KumpulTugas --> Sys_SimpanTugas
+                            Sys_SimpanTugas --> Task_Periksa
+                            Task_Periksa --> Task_InputNilai
+                            Task_InputNilai --> Sys_UpdateTranskrip
+                            
+                            %% Alur Keuangan
+                            Start_Admin --> Task_BuatTagihan
+                            Task_BuatTagihan --> Sys_KirimInvoice
+                            Sys_KirimInvoice --> Task_LihatTagihan
+                            Task_LihatTagihan --> Gateway_Bayar
+                            
+                            Gateway_Bayar -- Ya --> Task_PilihMetode
+                            Gateway_Bayar -- Tidak --> Task_LihatTagihan
+                            
+                            Task_PilihMetode --> Task_Bayar
+                            Task_Bayar --> Sys_Verifikasi
+                            Sys_Verifikasi --> Gateway_Valid
+                            
+                            Gateway_Valid -- Valid --> Sys_UpdateLunas
+                            Gateway_Valid -- Tidak Valid --> Sys_Batal
+                            Sys_Batal --> Task_LihatTagihan
+                            
+                            Sys_UpdateLunas --> Task_Rekap
+                            Task_Rekap --> End_Admin
+                            Sys_UpdateTranskrip --> End_Admin
+                        end
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>3. Penjelasan Rinci Alur Proses (TO BE)</h2>
+            <ul class="process-list">
+                <li>
+                    <strong>Proses Administrasi Keuangan (Tagihan & Pembayaran)</strong>
+                    <p>Admin Keuangan memulai proses dengan mengenerate tagihan secara massal untuk satu angkatan atau jurusan (misal: PTS/PAS). Sistem akan memproses pembuatan <em>invoice</em> dan mengirimkan notifikasi ke dashboard Siswa. Siswa akan melihat tagihan, memutuskan metode pembayaran (Transfer Bank/E-Wallet via Gateway), dan melakukan pembayaran. Sistem secara otomatis dan <em>real-time</em> akan memverifikasi status pembayaran dari <em>Payment Gateway</em>. Jika sukses, status tagihan otomatis menjadi "Lunas", dan Admin dapat melihat rekap laporannya secara instan tanpa perlu pencatatan manual (Rekonsiliasi Otomatis).</p>
+                </li>
+                <li>
+                    <strong>Proses Akademik (E-Learning & Penilaian)</strong>
+                    <p>Guru memulai proses dengan mengunggah materi pelajaran dan tugas ke dalam kelas virtual. Sistem akan mengirim notifikasi ke siswa terkait. Siswa membaca materi dan mengerjakan tugas tersebut, kemudian mengunggah (<em>submit</em>) hasilnya. Sistem menyimpan dokumen/jawaban siswa agar tidak tercecer. Guru kemudian memeriksa tugas tersebut dan memberikan nilai. Setelah nilai dipublish oleh Guru, Sistem akan secara otomatis mengupdate nilai tersebut ke Transkrip Nilai (Rekap Nilai) siswa yang bisa dilihat kapan saja.</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>

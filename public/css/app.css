@@ -1551,18 +1551,382 @@ h6 { font-size: .9rem; }
     width: 100%;
 }
 
-/* ── Responsive ───────────────────────────────────────────── */
+/* ── Greeting Card (Dashboard) ────────────────────────────── */
+.greeting-card {
+    background: linear-gradient(135deg, var(--primary-700), var(--primary-900));
+    color: #fff;
+    border-radius: var(--radius-lg);
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.greeting-card::after {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255,255,255,.08), transparent);
+    border-radius: 50%;
+    top: -100px;
+    right: -60px;
+    pointer-events: none;
+}
+
+.greeting-card h1 {
+    color: #fff;
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+}
+
+.greeting-card p {
+    color: rgba(255,255,255,.75);
+    font-size: .9rem;
+    margin-bottom: 16px;
+}
+
+.greeting-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.greeting-actions .btn {
+    background: rgba(255,255,255,.18);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.25);
+    backdrop-filter: blur(8px);
+    font-size: .82rem;
+    padding: 8px 16px;
+}
+
+.greeting-actions .btn:hover {
+    background: rgba(255,255,255,.3);
+    color: #fff;
+}
+
+/* ── Stat Detail Row & Badge ──────────────────────────────── */
+.stat-detail-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.stat-badge {
+    font-size: .7rem;
+    background: var(--slate-100);
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    color: var(--text-secondary);
+}
+
+.stat-card-gradient {
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-800));
+    color: #fff;
+    border: none;
+}
+
+.stat-card-gradient .stat-card-icon {
+    background: rgba(255,255,255,.2);
+    color: #fff;
+}
+
+.stat-card-gradient .stat-card-label {
+    color: rgba(255,255,255,.75);
+}
+
+.stat-card-gradient .stat-card-value {
+    color: #fff;
+}
+
+.stat-card-gradient .stat-badge {
+    background: rgba(255,255,255,.2);
+    color: rgba(255,255,255,.9);
+}
+
+/* ── Stat Progress Bar ────────────────────────────────────── */
+.stat-progress {
+    height: 6px;
+    background: var(--slate-200);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.stat-progress-bar {
+    height: 100%;
+    border-radius: var(--radius-full);
+    background: linear-gradient(90deg, var(--success), #059669);
+    transition: width .6s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── Scroll to Top Button ─────────────────────────────────── */
+.scroll-to-top {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-full);
+    background: var(--primary-600);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 1.15rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition: var(--transition);
+    z-index: 800;
+}
+
+.scroll-to-top.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.scroll-to-top:hover {
+    background: var(--primary-700);
+    transform: translateY(-2px);
+}
+
+/* ── Landing Page — Additional Sections ───────────────────── */
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.divider {
+    width: 60px;
+    height: 4px;
+    background: var(--primary-500);
+    border-radius: var(--radius-full);
+    margin: 12px auto 28px;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.landing-about {
+    padding: 70px 40px;
+    background: #fff;
+}
+
+.landing-about h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+.about-text {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.landing-majors {
+    padding: 70px 40px;
+    background: var(--slate-50);
+}
+
+.landing-majors h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.landing-majors .subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-bottom: 40px;
+}
+
+.majors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.major-card {
+    background: #fff;
+    padding: 28px 22px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    text-align: center;
+    transition: var(--transition);
+}
+
+.major-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-200);
+}
+
+.major-icon {
+    width: 52px;
+    height: 52px;
+    background: var(--primary-100);
+    color: var(--primary-600);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+    font-size: 1.4rem;
+}
+
+.major-card h3 {
+    font-size: .95rem;
+    font-weight: 600;
+}
+
+/* ── Landing Footer — Enhanced ────────────────────────────── */
+.landing-footer {
+    padding: 50px 40px 30px;
+    text-align: left;
+    background: var(--slate-900);
+    color: rgba(255,255,255,.5);
+    font-size: .85rem;
+}
+
+.landing-footer strong {
+    color: #fff;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.footer-brand {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.footer-brand i {
+    font-size: 1.3rem;
+}
+
+.footer-desc {
+    color: rgba(255,255,255,.5);
+    font-size: .88rem;
+    line-height: 1.6;
+    max-width: 400px;
+}
+
+.footer-col h4 {
+    color: #fff;
+    font-size: .95rem;
+    margin-bottom: 14px;
+}
+
+.footer-contact {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-contact li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    color: rgba(255,255,255,.55);
+    font-size: .85rem;
+    line-height: 1.5;
+}
+
+.footer-contact li i {
+    margin-top: 3px;
+    color: var(--primary-400);
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255,255,255,.1);
+    padding-top: 20px;
+    text-align: center;
+    color: rgba(255,255,255,.35);
+    font-size: .8rem;
+}
+
+/* ── Extra Utility Classes ────────────────────────────────── */
+.flex-column { flex-direction: column; }
+.mb-4 { margin-bottom: 32px; }
+.py-4 { padding-top: 32px; padding-bottom: 32px; }
+.p-3 { padding: 16px; }
+.m-0 { margin: 0; }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE — Mobile-First Breakpoints
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Breakpoint: ≤ 1200px (small desktops / large tablets) ── */
+@media (max-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .landing-hero h1 {
+        font-size: 2.6rem;
+    }
+}
+
+/* ── Breakpoint: ≤ 1024px (tablets landscape) ────────────── */
 @media (max-width: 1024px) {
     .dashboard-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .landing-about {
+        padding: 50px 24px;
+    }
+
+    .landing-majors {
+        padding: 50px 24px;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
+/* ── Breakpoint: ≤ 768px (tablets portrait / large phones) ── */
 @media (max-width: 768px) {
+    /* -- Sidebar: Off-canvas -- */
     .sidebar {
         transform: translateX(-100%);
     }
@@ -1579,42 +1943,132 @@ h6 { font-size: .9rem; }
         display: flex;
     }
 
-    .page-content {
-        padding: 18px;
-    }
-
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-
+    /* -- Topbar -- */
     .topbar {
-        padding: 0 18px;
+        padding: 0 16px;
     }
 
     .topbar-user-name {
         display: none;
     }
 
-    .landing-hero h1 {
-        font-size: 2.2rem;
+    .breadcrumb {
+        font-size: .8rem;
     }
 
-    .landing-hero p {
-        font-size: 1rem;
+    /* -- Page Content -- */
+    .page-content {
+        padding: 16px;
     }
 
-    .landing-nav {
-        padding: 14px 20px;
+    .page-header h1 {
+        font-size: 1.3rem;
     }
 
-    .landing-features {
-        padding: 50px 20px;
+    .page-header p {
+        font-size: .82rem;
     }
 
+    .page-header.d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 12px;
+    }
+
+    /* -- Stats Grid -- */
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 16px;
+    }
+
+    .stat-card-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+
+    .stat-card-value {
+        font-size: 1.3rem;
+    }
+
+    .stat-card-label {
+        font-size: .72rem;
+    }
+
+    /* -- Greeting Card -- */
+    .greeting-card {
+        padding: 20px;
+    }
+
+    .greeting-card h1 {
+        font-size: 1.2rem;
+    }
+
+    .greeting-card p {
+        font-size: .82rem;
+    }
+
+    .greeting-actions {
+        gap: 8px;
+    }
+
+    .greeting-actions .btn {
+        font-size: .75rem;
+        padding: 6px 12px;
+    }
+
+    /* -- Cards -- */
+    .card-header {
+        padding: 14px 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .card-body {
+        padding: 16px;
+    }
+
+    .card-footer {
+        padding: 12px 16px;
+    }
+
+    /* -- Tables -- */
+    .table thead th {
+        padding: 10px 12px;
+        font-size: .7rem;
+    }
+
+    .table tbody td {
+        padding: 10px 12px;
+        font-size: .82rem;
+    }
+
+    .table .user-cell {
+        gap: 8px;
+    }
+
+    .table .user-avatar {
+        width: 30px;
+        height: 30px;
+        font-size: .65rem;
+    }
+
+    /* -- Forms -- */
     .form-row {
         grid-template-columns: 1fr;
     }
 
+    .form-control {
+        font-size: .85rem;
+        padding: 9px 12px;
+    }
+
+    /* -- Filter Bar -- */
     .filter-bar {
         flex-direction: column;
         align-items: stretch;
@@ -1622,6 +2076,558 @@ h6 { font-size: .9rem; }
 
     .filter-bar .search-input {
         min-width: unset;
+    }
+
+    /* -- Buttons -- */
+    .btn {
+        padding: 9px 16px;
+        font-size: .82rem;
+    }
+
+    .btn-sm {
+        padding: 5px 12px;
+        font-size: .75rem;
+    }
+
+    .btn-lg {
+        padding: 11px 22px;
+        font-size: .88rem;
+    }
+
+    .btn-group {
+        flex-wrap: wrap;
+    }
+
+    /* -- Modals -- */
+    .modal {
+        max-width: 95vw;
+        margin: 10px;
+    }
+
+    .modal-header {
+        padding: 16px 18px;
+    }
+
+    .modal-body {
+        padding: 18px;
+    }
+
+    .modal-footer {
+        padding: 14px 18px;
+        flex-direction: column;
+    }
+
+    .modal-footer .btn {
+        width: 100%;
+    }
+
+    /* -- Bill Cards -- */
+    .bill-card {
+        padding: 14px;
+        gap: 12px;
+    }
+
+    .bill-card-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .bill-card-info h4 {
+        font-size: .85rem;
+    }
+
+    .bill-card-info p {
+        font-size: .75rem;
+    }
+
+    .bill-card-amount .amount {
+        font-size: .95rem;
+    }
+
+    /* -- Profile -- */
+    .profile-header {
+        padding: 22px 18px;
+        flex-direction: column;
+        text-align: center;
+        gap: 14px;
+    }
+
+    .profile-avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+
+    .profile-info h2 {
+        font-size: 1.15rem;
+    }
+
+    .profile-info p {
+        font-size: .82rem;
+    }
+
+    /* -- Pagination -- */
+    .pagination {
+        padding: 14px 10px;
+        gap: 3px;
+        flex-wrap: wrap;
+    }
+
+    .pagination li a,
+    .pagination li span {
+        min-width: 32px;
+        height: 32px;
+        font-size: .78rem;
+        padding: 0 8px;
+    }
+
+    /* -- Landing Page -- */
+    .landing-hero {
+        padding: 100px 24px 60px;
+    }
+
+    .landing-hero h1 {
+        font-size: 2rem;
+    }
+
+    .landing-hero p {
+        font-size: .95rem;
+    }
+
+    .landing-nav {
+        padding: 12px 16px;
+    }
+
+    .landing-nav-brand {
+        font-size: 1rem;
+    }
+
+    .landing-features {
+        padding: 50px 20px;
+    }
+
+    .landing-features h2 {
+        font-size: 1.6rem;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .feature-card {
+        padding: 24px 20px;
+    }
+
+    .landing-about {
+        padding: 40px 20px;
+    }
+
+    .landing-about h2 {
+        font-size: 1.5rem;
+    }
+
+    .landing-majors {
+        padding: 40px 20px;
+    }
+
+    .landing-majors h2 {
+        font-size: 1.5rem;
+    }
+
+    .majors-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .major-card {
+        padding: 20px 16px;
+    }
+
+    .major-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 1.2rem;
+    }
+
+    .major-card h3 {
+        font-size: .85rem;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .landing-footer {
+        padding: 40px 20px 24px;
+    }
+
+    /* -- Grid Utilities -- */
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .grid-3 {
+        grid-template-columns: 1fr;
+    }
+
+    /* -- Scroll to Top -- */
+    .scroll-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    /* -- Alerts -- */
+    .alert {
+        padding: 12px 14px;
+        font-size: .82rem;
+    }
+
+    /* -- Login Card -- */
+    .login-card {
+        padding: 28px 22px;
+        margin: 0 16px;
+    }
+
+    .login-logo-icon {
+        width: 52px;
+        height: 52px;
+        font-size: 1.5rem;
+    }
+
+    .login-logo h2 {
+        font-size: 1.15rem;
+    }
+
+    /* -- Dropdown -- */
+    .dropdown-menu {
+        min-width: 170px;
+    }
+
+    /* -- Chart -- */
+    .chart-container {
+        height: 220px;
+    }
+
+    /* -- Empty State -- */
+    .empty-state {
+        padding: 40px 16px;
+    }
+
+    .empty-state-icon {
+        font-size: 2.8rem;
+    }
+
+    .empty-state h3 {
+        font-size: 1rem;
+    }
+}
+
+/* ── Breakpoint: ≤ 480px (small phones) ──────────────────── */
+@media (max-width: 480px) {
+    html {
+        font-size: 14px;
+    }
+
+    /* -- Page -- */
+    .page-content {
+        padding: 12px;
+    }
+
+    .page-header h1 {
+        font-size: 1.15rem;
+    }
+
+    /* -- Topbar -- */
+    .topbar {
+        padding: 0 12px;
+        height: 56px;
+    }
+
+    .topbar-action {
+        width: 34px;
+        height: 34px;
+        font-size: 1.05rem;
+    }
+
+    .topbar-user {
+        padding: 4px 6px 4px 4px;
+    }
+
+    .topbar-user-avatar {
+        width: 30px;
+        height: 30px;
+        font-size: .7rem;
+    }
+
+    /* -- Stats: force 1 column on small phones -- */
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 14px;
+        gap: 12px;
+    }
+
+    .stat-card-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+
+    .stat-card-value {
+        font-size: 1.15rem;
+    }
+
+    .stat-detail-row {
+        gap: 4px;
+    }
+
+    .stat-badge {
+        font-size: .65rem;
+        padding: 1px 6px;
+    }
+
+    /* -- Greeting Card -- */
+    .greeting-card {
+        padding: 16px;
+    }
+
+    .greeting-card h1 {
+        font-size: 1.05rem;
+    }
+
+    .greeting-card p {
+        font-size: .78rem;
+    }
+
+    .greeting-actions .btn {
+        font-size: .7rem;
+        padding: 5px 10px;
+    }
+
+    /* -- Cards -- */
+    .card-header {
+        padding: 12px 14px;
+    }
+
+    .card-header h3 {
+        font-size: .9rem;
+    }
+
+    .card-body {
+        padding: 14px;
+    }
+
+    /* -- Tables -- */
+    .table thead th {
+        padding: 8px 10px;
+        font-size: .65rem;
+    }
+
+    .table tbody td {
+        padding: 8px 10px;
+        font-size: .78rem;
+    }
+
+    .table .user-avatar {
+        width: 26px;
+        height: 26px;
+        font-size: .6rem;
+    }
+
+    .table .user-info strong {
+        font-size: .8rem;
+    }
+
+    .table .user-info span {
+        font-size: .7rem;
+    }
+
+    /* -- Buttons -- */
+    .btn {
+        padding: 8px 14px;
+        font-size: .78rem;
+    }
+
+    .btn-sm {
+        padding: 4px 10px;
+        font-size: .72rem;
+    }
+
+    .btn-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+    /* -- Bill Cards -- */
+    .bill-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 14px;
+    }
+
+    .bill-card-amount {
+        text-align: left;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    /* -- Modals -- */
+    .modal-overlay {
+        padding: 10px;
+    }
+
+    .modal {
+        border-radius: var(--radius-lg);
+    }
+
+    .modal-header h3 {
+        font-size: .95rem;
+    }
+
+    /* -- Landing Page -- */
+    .landing-hero {
+        padding: 80px 16px 50px;
+        min-height: auto;
+    }
+
+    .landing-hero h1 {
+        font-size: 1.6rem;
+        line-height: 1.25;
+    }
+
+    .landing-hero p {
+        font-size: .85rem;
+        margin-bottom: 24px;
+    }
+
+    .landing-hero .btn {
+        padding: 12px 28px;
+        font-size: .88rem;
+    }
+
+    .landing-nav-brand {
+        font-size: .88rem;
+        gap: 8px;
+    }
+
+    .landing-nav-brand .icon {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+
+    .landing-features h2 {
+        font-size: 1.3rem;
+    }
+
+    .landing-features .subtitle {
+        font-size: .88rem;
+    }
+
+    .majors-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .major-card {
+        padding: 16px 12px;
+    }
+
+    .major-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+
+    .major-card h3 {
+        font-size: .78rem;
+    }
+
+    .landing-about h2 {
+        font-size: 1.3rem;
+    }
+
+    .about-text {
+        font-size: .92rem;
+    }
+
+    .landing-majors h2 {
+        font-size: 1.3rem;
+    }
+
+    .footer-brand {
+        font-size: 1rem;
+    }
+
+    .footer-desc {
+        font-size: .82rem;
+    }
+
+    /* -- Pagination -- */
+    .pagination li a,
+    .pagination li span {
+        min-width: 28px;
+        height: 28px;
+        font-size: .72rem;
+        padding: 0 6px;
+    }
+
+    /* -- Login -- */
+    .login-card {
+        padding: 24px 18px;
+        margin: 0 10px;
+    }
+
+    .login-logo-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.4rem;
+    }
+
+    .login-logo h2 {
+        font-size: 1.05rem;
+    }
+
+    .login-logo p {
+        font-size: .8rem;
+    }
+
+    .login-card .form-control {
+        padding: 10px 14px;
+        font-size: .88rem;
+    }
+
+    .login-card .btn-primary {
+        padding: 11px;
+        font-size: .88rem;
+    }
+
+    /* -- Chart -- */
+    .chart-container {
+        height: 180px;
+    }
+
+    /* -- Typography -- */
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.25rem; }
+    h3 { font-size: 1.1rem; }
+
+    /* -- Sidebar on very small screens -- */
+    .sidebar {
+        width: 260px;
     }
 }
 
@@ -1631,7 +2637,9 @@ h6 { font-size: .9rem; }
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,.5);
+    backdrop-filter: blur(2px);
     z-index: 999;
+    transition: opacity .3s ease;
 }
 
 .sidebar-overlay.active {
@@ -1663,6 +2671,13 @@ h6 { font-size: .9rem; }
 
 [data-tooltip]:hover::after {
     opacity: 1;
+}
+
+/* Disable tooltips on touch devices */
+@media (hover: none) {
+    [data-tooltip]::after {
+        display: none;
+    }
 }
 
 /* ── Profile Card ─────────────────────────────────────────── */
